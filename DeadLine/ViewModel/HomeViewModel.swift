@@ -36,6 +36,16 @@ class HomeViewModel: ObservableObject {
 
         fetchItems() // 保存後に一覧更新
     }
+    
+    func deleteItem(_ item: DeadlineItem) {
+        let realm = try! Realm()
+        if let objectToDelete = realm.object(ofType: DeadlineItem.self, forPrimaryKey: item.id) {
+            try! realm.write {
+                realm.delete(objectToDelete)
+            }
+            fetchItems() // 削除後にリストを更新
+        }
+    }
 
 }
 

@@ -33,6 +33,12 @@ struct HomeView: View {
                                 countItem(title: title, date: date, days: days)
                             }
                         }
+                        .onDelete { indexSet in
+                            indexSet.forEach { index in
+                                let item = viewModel.items[index]
+                                viewModel.deleteItem(item)
+                            }
+                        }
                     } // Listここまで
                 } // VStack
             }// ZStack
