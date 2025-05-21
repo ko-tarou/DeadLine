@@ -43,6 +43,9 @@ struct HomeView: View {
                 } //プラスボタン
             }
         }// NavigationView
+        .onAppear{
+            viewModel.fetchItems()
+        }
         .sheet(isPresented: $showingAddItemModal){
             AddItemView(viewModel: viewModel)
         }
@@ -68,7 +71,7 @@ struct TopView: View {
         HStack{
             // count
             Text("100")
-                .font(.title)
+                .font(.title2)
             
             VStack(alignment: .leading){
                 // title

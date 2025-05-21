@@ -24,6 +24,7 @@ struct AddItemView: View {
     @State private var memo: String = ""
     @State private var inputMode: InputMode = .date
     @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
 
     var body: some View {
         NavigationView {
@@ -62,8 +63,15 @@ struct AddItemView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("追加") {
+                        if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                    alertMessage = "タイトルを入力してください"
+                                    showAlert = true
+                                    return
+                                }
+                        
                         if inputMode == .days {
                             guard let days = Int(days), days >= 0 else {
+                                alertMessage = "残り日数は0以上の数字で入力してください"
                                 showAlert = true
                                 return
                             }
@@ -76,6 +84,13 @@ struct AddItemView: View {
                     }
                 }
             }
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(
+                title: Text("入力エラー"),
+                message: Text(alertMessage),
+                dismissButton: .default(Text("OK"))
+            )
         }
     }
 }
