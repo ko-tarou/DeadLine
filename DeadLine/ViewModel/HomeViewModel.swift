@@ -5,9 +5,17 @@
 //  Created by 三ツ井渚 on 2025/05/21.
 //
 import Foundation
+import RealmSwift
 
 class HomeViewModel: ObservableObject {
     @Published var items: [DeadlineItem] = []
+    
+    func fetchItems() {
+        let realm = try! Realm()
+        let results = realm.objects(DeadlineItem.self)
+        items = Array(results)
+    }
+
     
     func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -16,8 +24,18 @@ class HomeViewModel: ObservableObject {
     }
     
     func addItem(title: String, date: Date, memo: String) {
-        let newItem = DeadlineItem(title: title, date: date, memo: memo)
-        items.append(newItem)
+        let newItem = DeadlineItem()
+        newItem.title = title
+        newItem.date = date
+        newItem.memo = memo
+
+        let realm = try! Realm()
+        try! realm.write {
+            realm.add(newItem)
+        }
+
+        fetchItems() // 保存後に一覧更新
     }
+
 }
 

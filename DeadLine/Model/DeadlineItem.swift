@@ -6,12 +6,15 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct DeadlineItem: Identifiable {
-    let id = UUID()
-    var title: String
-    var date: Date
-    
+class DeadlineItem: Object, Identifiable {
+    @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var title: String = ""
+    @Persisted var date: Date = Date()
+    @Persisted var memo: String = ""
+
+    // 計算プロパティ（保存はしない）
     var days: Int {
         let calendar = Calendar.current
         let now = calendar.startOfDay(for: Date())
@@ -19,6 +22,4 @@ struct DeadlineItem: Identifiable {
         let components = calendar.dateComponents([.day], from: now, to: target)
         return components.day ?? 0
     }
-    
-    var memo: String
 }
