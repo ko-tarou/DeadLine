@@ -9,23 +9,58 @@
 import SwiftUI
 
 struct HomeView: View {
+    @StateObject var viewModel = HomeViewModel()
+    @State private var showingAddItemModal = false
+    
     var body: some View {
-        ZStack{
-            VStack{
-                // Header
-                
-                ScrollView{
+        NavigationView{
+            ZStack{
+                VStack{
+                    // Header
+                    
                     // top
                     TopView()
                     
+                    
                     // items
-                    countItem()
-                }
+                    List{
+                        ForEach(viewModel.items){ item in
+                            var title = item.title
+                            var date = item.date.formatted()
+                            var days = item.days
+                            
+                            NavigationLink(destination: Text("🍊")){
+                                countItem(title: title, date: date, days: days)
+                            }
+                        }
+                    } // Listここまで
+                } // VStack
+            }// ZStack
+            .background(Color.gray)
+            .safeAreaInset(edge: .bottom, alignment: .trailing ){
+                addButtonView{
+                    showingAddItemModal = true
+                } //プラスボタン
             }
+        }// NavigationView
+        .sheet(isPresented: $showingAddItemModal){
+            AddItemView(viewModel: viewModel)
         }
-        .background(Color.gray)
     }
 }
+
+// add button
+struct addButtonView: View {
+    var onTap: () -> Void
+    
+    var body: some View {
+        Button(action: {onTap()}){
+            Image(systemName: "plus.circle.fill")
+                .font(.system(size: 60))
+        }
+    }
+}
+
 
 // top
 struct TopView: View {
@@ -50,21 +85,25 @@ struct TopView: View {
 
 // item
 struct countItem: View {
+    var title: String
+    var date: String
+    var days: Int
+    
     var body: some View {
         ZStack{
             HStack{
                 VStack(alignment: .leading){
-                    Text("Title")
+                    Text(title)
                         .font(.title)
                     
-                    Text("2020/22/22")
+                    Text(date)
                         .font(.title3)
                 }
                 
                 Spacer()
                 
                 HStack{
-                    Text("100")
+                    Text("\(days)")
                         .font(.title)
                     
                     Text("day")
@@ -84,7 +123,7 @@ struct countItem: View {
 #Preview {
 //    HomeView()
     
-    countItem()
+    countItem(title:"title", date:"2025/07/29", days:100)
 }
 
 #Preview{
