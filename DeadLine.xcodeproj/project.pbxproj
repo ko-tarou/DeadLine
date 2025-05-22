@@ -6,7 +6,20 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		87BECBE82DDF344E00530E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE72DDF344E00530E7A /* WidgetKit.framework */; };
+		87BECBEA2DDF344E00530E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE92DDF344E00530E7A /* SwiftUI.framework */; };
+		87BECBFB2DDF345000530E7A /* DeadLineWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		87BECBF92DDF345000530E7A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 87D3A5752DD5FD73005546F0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 87BECBE42DDF344E00530E7A;
+			remoteInfo = DeadLineWidgetExtension;
+		};
 		87D3A5922DD5FD74005546F0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 87D3A5752DD5FD73005546F0 /* Project object */;
@@ -23,13 +36,37 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		87BECBFC2DDF345000530E7A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				87BECBFB2DDF345000530E7A /* DeadLineWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DeadLineWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		87BECBE72DDF344E00530E7A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		87BECBE92DDF344E00530E7A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		87D3A57D2DD5FD73005546F0 /* DeadLine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeadLine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		87D3A5912DD5FD74005546F0 /* DeadLineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DeadLineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		87D3A59B2DD5FD74005546F0 /* DeadLineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DeadLineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		87BECC002DDF345000530E7A /* Exceptions for "DeadLineWidget" folder in "DeadLineWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 87BECBE42DDF344E00530E7A /* DeadLineWidgetExtension */;
+		};
 		87D3A5A32DD5FD74005546F0 /* Exceptions for "DeadLine" folder in "DeadLine" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -40,6 +77,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		87BECBEB2DDF344E00530E7A /* DeadLineWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				87BECC002DDF345000530E7A /* Exceptions for "DeadLineWidget" folder in "DeadLineWidgetExtension" target */,
+			);
+			path = DeadLineWidget;
+			sourceTree = "<group>";
+		};
 		87D3A57F2DD5FD73005546F0 /* DeadLine */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -61,6 +106,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		87BECBE22DDF344E00530E7A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				87BECBEA2DDF344E00530E7A /* SwiftUI.framework in Frameworks */,
+				87BECBE82DDF344E00530E7A /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		87D3A57A2DD5FD73005546F0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -85,12 +139,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		87BECBE62DDF344E00530E7A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				87BECBE72DDF344E00530E7A /* WidgetKit.framework */,
+				87BECBE92DDF344E00530E7A /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		87D3A5742DD5FD73005546F0 = {
 			isa = PBXGroup;
 			children = (
 				87D3A57F2DD5FD73005546F0 /* DeadLine */,
 				87D3A5942DD5FD74005546F0 /* DeadLineTests */,
 				87D3A59E2DD5FD74005546F0 /* DeadLineUITests */,
+				87BECBEB2DDF344E00530E7A /* DeadLineWidget */,
+				87BECBE62DDF344E00530E7A /* Frameworks */,
 				87D3A57E2DD5FD73005546F0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -101,6 +166,7 @@
 				87D3A57D2DD5FD73005546F0 /* DeadLine.app */,
 				87D3A5912DD5FD74005546F0 /* DeadLineTests.xctest */,
 				87D3A59B2DD5FD74005546F0 /* DeadLineUITests.xctest */,
+				87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,6 +174,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		87BECBE42DDF344E00530E7A /* DeadLineWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 87BECBFF2DDF345000530E7A /* Build configuration list for PBXNativeTarget "DeadLineWidgetExtension" */;
+			buildPhases = (
+				87BECBE12DDF344E00530E7A /* Sources */,
+				87BECBE22DDF344E00530E7A /* Frameworks */,
+				87BECBE32DDF344E00530E7A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				87BECBEB2DDF344E00530E7A /* DeadLineWidget */,
+			);
+			name = DeadLineWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = DeadLineWidgetExtension;
+			productReference = 87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		87D3A57C2DD5FD73005546F0 /* DeadLine */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 87D3A5A42DD5FD74005546F0 /* Build configuration list for PBXNativeTarget "DeadLine" */;
@@ -115,10 +203,12 @@
 				87D3A5792DD5FD73005546F0 /* Sources */,
 				87D3A57A2DD5FD73005546F0 /* Frameworks */,
 				87D3A57B2DD5FD73005546F0 /* Resources */,
+				87BECBFC2DDF345000530E7A /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				87BECBFA2DDF345000530E7A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				87D3A57F2DD5FD73005546F0 /* DeadLine */,
@@ -186,6 +276,9 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					87BECBE42DDF344E00530E7A = {
+						CreatedOnToolsVersion = 16.2;
+					};
 					87D3A57C2DD5FD73005546F0 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -216,11 +309,19 @@
 				87D3A57C2DD5FD73005546F0 /* DeadLine */,
 				87D3A5902DD5FD74005546F0 /* DeadLineTests */,
 				87D3A59A2DD5FD74005546F0 /* DeadLineUITests */,
+				87BECBE42DDF344E00530E7A /* DeadLineWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		87BECBE32DDF344E00530E7A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		87D3A57B2DD5FD73005546F0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +346,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		87BECBE12DDF344E00530E7A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		87D3A5792DD5FD73005546F0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,6 +377,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		87BECBFA2DDF345000530E7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 87BECBE42DDF344E00530E7A /* DeadLineWidgetExtension */;
+			targetProxy = 87BECBF92DDF345000530E7A /* PBXContainerItemProxy */;
+		};
 		87D3A5932DD5FD74005546F0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 87D3A57C2DD5FD73005546F0 /* DeadLine */;
@@ -282,6 +395,60 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		87BECBFD2DDF345000530E7A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CHP337D75C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DeadLineWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DeadLineWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kota.DeadLine.DeadLineWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		87BECBFE2DDF345000530E7A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CHP337D75C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DeadLineWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DeadLineWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kota.DeadLine.DeadLineWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		87D3A5A52DD5FD74005546F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -538,6 +705,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		87BECBFF2DDF345000530E7A /* Build configuration list for PBXNativeTarget "DeadLineWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				87BECBFD2DDF345000530E7A /* Debug */,
+				87BECBFE2DDF345000530E7A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		87D3A5782DD5FD73005546F0 /* Build configuration list for PBXProject "DeadLine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
