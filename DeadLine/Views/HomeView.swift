@@ -20,6 +20,9 @@ func printRealmPath() {
 struct HomeView: View {
     @StateObject var viewModel = HomeViewModel()
     @State private var showingAddItemModal = false
+    @State private var selectedItem: DeadlineItem? = nil
+    @State private var isShowingDetailSheet = false
+
     
     var body: some View {
         NavigationView{
@@ -43,12 +46,14 @@ struct HomeView: View {
                     // items
                     List{
                         ForEach(viewModel.items){ item in
-                            var title = item.title
-                            var date = item.date.formatted()
-                            var days = item.days
-                            
-                            NavigationLink(destination: Text("🍊")){
-                                countItem(title: title, date: date, days: days)
+                            countItem(
+                                title: item.title,
+                                date: item.date.formatted(),
+                                days: item.days
+                            )
+                            .onTapGesture {
+                                selectedItem = item
+                                isShowingDetailSheet = true
                             }
                             .swipeActions(edge: .leading, allowsFullSwipe: false) {
                                         Button {
@@ -81,6 +86,15 @@ struct HomeView: View {
         .sheet(isPresented: $showingAddItemModal){
             AddItemView(viewModel: viewModel)
         }
+        .sheet(item: $selectedItem) { item in
+            ShowItem(
+                title: item.title,
+                date: viewModel.formattedDate(item.date),
+                days: item.days,
+                memo: item.memo
+            )
+        }
+
     }
 }
 
