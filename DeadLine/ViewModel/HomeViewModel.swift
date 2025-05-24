@@ -27,7 +27,7 @@ class HomeViewModel: ObservableObject {
         do {
             let realm = try Realm()
             if let pinned = realm.objects(PinnedItem.self).first {
-                pinnedItem = realm.object(ofType: DeadlineItem.self, forPrimaryKey: pinned.pinnedId)
+                pinnedItem = realm.object(ofType: DeadlineItem.self, forPrimaryKey: pinned.id)
             } else {
                 pinnedItem = nil
             }
@@ -78,12 +78,12 @@ class HomeViewModel: ObservableObject {
                 
                 // 新たにピン留めアイテムのUUIDを保存
                 let pinned = PinnedItem()
-                pinned.pinnedId = item.id
+                pinned.id = item.id
                 realm.add(pinned)
             }
             
         fetchPinnedItem()
-        }
+    }
 
 }
 
