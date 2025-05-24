@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		30FA73812DDDD464001E57BA /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 30FA73802DDDD464001E57BA /* RealmSwift */; };
+		30FA73B22DE21AF3001E57BA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30FA73B12DE21AE9001E57BA /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,9 +29,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		87D3A57D2DD5FD73005546F0 /* DeadLine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeadLine.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		87D3A5912DD5FD74005546F0 /* DeadLineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DeadLineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		87D3A59B2DD5FD74005546F0 /* DeadLineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DeadLineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		30FA73B12DE21AE9001E57BA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		87D3A57D2DD5FD73005546F0 /* DeadLine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = DeadLine.app; path = "/Users/nagisa/Documents/all/teamDev/DeadLine/build/Debug-iphoneos/DeadLine.app"; sourceTree = "<absolute>"; };
+		87D3A5912DD5FD74005546F0 /* DeadLineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = DeadLineTests.xctest; path = "/Users/nagisa/Documents/all/teamDev/DeadLine/build/Debug-iphoneos/DeadLine.app/PlugIns/DeadLineTests.xctest"; sourceTree = "<absolute>"; };
+		87D3A59B2DD5FD74005546F0 /* DeadLineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = DeadLineUITests.xctest; path = "/Users/nagisa/Documents/all/teamDev/DeadLine/build/Debug-iphoneos/DeadLineUITests-Runner.app/PlugIns/DeadLineUITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,21 +95,11 @@
 		87D3A5742DD5FD73005546F0 = {
 			isa = PBXGroup;
 			children = (
+				30FA73B12DE21AE9001E57BA /* .gitignore */,
 				87D3A57F2DD5FD73005546F0 /* DeadLine */,
 				87D3A5942DD5FD74005546F0 /* DeadLineTests */,
 				87D3A59E2DD5FD74005546F0 /* DeadLineUITests */,
-				87D3A57E2DD5FD73005546F0 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		87D3A57E2DD5FD73005546F0 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				87D3A57D2DD5FD73005546F0 /* DeadLine.app */,
-				87D3A5912DD5FD74005546F0 /* DeadLineTests.xctest */,
-				87D3A59B2DD5FD74005546F0 /* DeadLineUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,7 +210,7 @@
 				30FA737D2DDDD464001E57BA /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 87D3A57E2DD5FD73005546F0 /* Products */;
+			productRefGroup = 87D3A5742DD5FD73005546F0;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -234,6 +226,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30FA73B22DE21AF3001E57BA /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
