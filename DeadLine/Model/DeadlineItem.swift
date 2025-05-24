@@ -14,7 +14,7 @@ class DeadlineItem: Object, Identifiable {
     @Persisted var date: Date = Date()
     @Persisted var memo: String = ""
 
-    // 計算プロパティ（保存はしない）
+    // 日数計算（保存はしない）
     var days: Int {
         let calendar = Calendar.current
         let now = calendar.startOfDay(for: Date())
@@ -23,3 +23,9 @@ class DeadlineItem: Object, Identifiable {
         return components.day ?? 0
     }
 }
+
+class PinnedItem: Object {
+    @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var pinnedId: ObjectId
+}
+

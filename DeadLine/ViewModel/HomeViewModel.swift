@@ -9,11 +9,32 @@ import RealmSwift
 
 class HomeViewModel: ObservableObject {
     @Published var items: [DeadlineItem] = []
+    @Published var pinnedItem: DeadlineItem? = nil
     
     func fetchItems() {
-        let realm = try! Realm()
-        let results = realm.objects(DeadlineItem.self)
-        items = Array(results)
+        do {
+            let realm = try Realm()
+            let results = realm.objects(DeadlineItem.self)
+            items = Array(results)
+        } catch {
+            print("Realm読み込みエラー: \(error.localizedDescription)")
+            items = []
+        }
+    }
+
+    
+    func fetchPinnedItem() {
+        do {
+            let realm = try Realm()
+            if let pinned = realm.objects(PinnedItem.self).first {
+                pinnedItem = realm.object(ofType: DeadlineItem.self, forPrimaryKey: pinned.pinnedId)
+            } else {
+                pinnedItem = nil
+            }
+        } catch {
+            print("ピン留めアイテムの取得エラー: \(error.localizedDescription)")
+            pinnedItem = nil
+        }
     }
 
     
@@ -46,6 +67,23 @@ class HomeViewModel: ObservableObject {
             fetchItems() // 削除後にリストを更新
         }
     }
+    
+    func pinItem(_ item: DeadlineItem) {
+            let realm = try! Realm()
+            
+            try! realm.write {
+                // すでにピン留めされているものがあれば削除
+                let pinnedItems = realm.objects(PinnedItem.self)
+                realm.delete(pinnedItems)
+                
+                // 新たにピン留めアイテムのUUIDを保存
+                let pinned = PinnedItem()
+                pinned.pinnedId = item.id
+                realm.add(pinned)
+            }
+            
+        fetchPinnedItem()
+        }
 
 }
 

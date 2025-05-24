@@ -7,6 +7,15 @@
 
 
 import SwiftUI
+import RealmSwift
+
+func printRealmPath() {
+    if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
+        print("Realm is located at:", realmURL.path)
+    } else {
+        print("Could not determine Realm file URL.")
+    }
+}
 
 struct HomeView: View {
     @StateObject var viewModel = HomeViewModel()
@@ -16,10 +25,19 @@ struct HomeView: View {
         NavigationView{
             ZStack{
                 VStack{
+                    Button("show realm path") {
+                        printRealmPath()
+                    }
+                    
                     // Header
                     
                     // top
-                    TopView()
+                    if let pinnedItem = viewModel.pinnedItem {
+                        TopView(days: pinnedItem.days, title: pinnedItem.title, date: HomeViewModel().formattedDate(pinnedItem.date))
+                    } else {
+                        Text("not pin")
+                    }
+                    
                     
                     
                     // items
@@ -32,6 +50,14 @@ struct HomeView: View {
                             NavigationLink(destination: Text("🍊")){
                                 countItem(title: title, date: date, days: days)
                             }
+                            .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                                        Button {
+                                            viewModel.pinItem(item)
+                                        } label: {
+                                            Label("ピン留め", systemImage: "pin.fill")
+                                        }
+                                        .tint(.yellow)
+                                }
                         }
                         .onDelete { indexSet in
                             indexSet.forEach { index in
@@ -58,6 +84,7 @@ struct HomeView: View {
     }
 }
 
+
 // add button
 struct addButtonView: View {
     var onTap: () -> Void
@@ -73,19 +100,23 @@ struct addButtonView: View {
 
 // top
 struct TopView: View {
+    var days: Int
+    var title: String
+    var date: String
+    
     var body: some View {
         HStack{
             // count
-            Text("100")
+            Text("\(days)")
                 .font(.title2)
             
             VStack(alignment: .leading){
                 // title
-                Text("title")
+                Text(title)
                     .font(.title2)
                 
                 // day
-                Text("2020/02/22")
+                Text(date)
             }
             
         }
