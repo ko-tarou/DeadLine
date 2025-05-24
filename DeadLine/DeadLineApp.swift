@@ -6,27 +6,27 @@
 //
 
 import SwiftUI
-import SwiftData
+import RealmSwift
 
 @main
-struct DeadLineApp: App {
-    var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
-        }
-    }()
+struct DeadLineApp: SwiftUI.App {
+    init() {
+        configureRealm()
+    }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(sharedModelContainer)
+    }
+    
+    func configureRealm() {
+        let config = Realm.Configuration(
+            schemaVersion: 1,
+            migrationBlock: { migration, oldSchemaVersion in
+                // マイグレーションが必要な場合に記述
+            }
+        )
+        Realm.Configuration.defaultConfiguration = config
     }
 }
