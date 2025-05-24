@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30FA73D42DE21E10001E57BA /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 30FA73802DDDD464001E57BA /* RealmSwift */; };
 		87BECBE82DDF344E00530E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE72DDF344E00530E7A /* WidgetKit.framework */; };
 		87BECBEA2DDF344E00530E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE92DDF344E00530E7A /* SwiftUI.framework */; };
 		87BECBFB2DDF345000530E7A /* DeadLineWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -119,7 +120,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30FA73812DDDD464001E57BA /* RealmSwift in Frameworks */,
+				30FA73D42DE21E10001E57BA /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
