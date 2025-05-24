@@ -1,37 +1,29 @@
-//
-//  ShowItem.swift
-//  DeadLine
-//
-//  Created by 三ツ井渚 on 2025/05/21.
-//
-
 import SwiftUI
 import RealmSwift
 
 struct ShowItem: View {
-    @ObservedObject var viewModel = HomeViewModel()
+    @ObservedObject var viewModel: HomeViewModel
     @Environment(\.dismiss) var dismiss
     @State private var showingAddItemModal = false
-    
+    @State private var showingDeleteAlert = false
+
     let id: ObjectId
 
-    @State var title: String
-    @State var date: String
-    @State var days: Int
-    @State var memo: String
-    
+    @State var title: String = ""
+    @State var date: String = ""
+    @State var days: Int = 0
+    @State var memo: String = ""
+
+    @State private var currentItem: DeadlineItem?
+
     var body: some View {
         NavigationView {
             Form {
                 Text(title)
-                
                 Text(date)
-                
                 Text("\(days)")
                 Text("day")
-                
                 Text(memo)
-            
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -39,36 +31,44 @@ struct ShowItem: View {
                         dismiss()
                     }
                 }
-                
+
                 ToolbarItem(placement: .confirmationAction) {
                     Menu {
                         Button("編集") {
-                            print("編集 tapped")
                             showingAddItemModal = true
                         }
-                                            
+
                         Button(role: .destructive) {
-                            print("削除 tapped")
-                            dismiss()
+                            showingDeleteAlert = true
                         } label: {
                             Text("削除")
                         }
                     } label: {
                         Image(systemName: "ellipsis")
                     }
-                    .sheet(isPresented: $showingAddItemModal, onDismiss: {
-                        loadItem()
-                    }){
-                        AddItemView(viewModel: viewModel, id: id)
-                    }
                 }
             }
+            // 削除確認アラート
+            .alert("削除の確認", isPresented: $showingDeleteAlert) {
+                Button("削除", role: .destructive) {
+                    viewModel.deleteItemById(id)
+                    dismiss()
+                }
+                Button("キャンセル", role: .cancel) { }
+            } message: {
+                Text("このアイテムを削除してもよろしいですか？")
+            }
         }
-        .onAppear{
+        .sheet(isPresented: $showingAddItemModal, onDismiss: {
+            loadItem()
+        }) {
+            AddItemView(viewModel: viewModel, id: id)
+        }
+        .onAppear {
             loadItem()
         }
     }
-    
+
     func loadItem() {
         do {
             let realm = try Realm()
@@ -77,6 +77,8 @@ struct ShowItem: View {
                 memo = item.memo
                 date = item.date.formatted()
                 days = Calendar.current.dateComponents([.day], from: Date(), to: item.date).day ?? 0
+            } else {
+                dismiss()
             }
         } catch {
             print("読み込みエラー: \(error.localizedDescription)")
@@ -85,5 +87,5 @@ struct ShowItem: View {
 }
 
 #Preview {
-    ShowItem(id:ObjectId("6831e2010445556254a6bd18"), title: "title", date: "2025/3/3", days: 20, memo: "memo")
+//    ShowItem(id: ObjectId("6831e2010445556254a6bd18"))
 }

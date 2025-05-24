@@ -80,15 +80,23 @@ class HomeViewModel: ObservableObject {
     }
     
     // 削除
-    func deleteItem(_ item: DeadlineItem) {
-        let realm = try! Realm()
-        if let objectToDelete = realm.object(ofType: DeadlineItem.self, forPrimaryKey: item.id) {
-            try! realm.write {
-                realm.delete(objectToDelete)
+    func deleteItemById(_ id: ObjectId) {
+        DispatchQueue.main.async {
+            do {
+                let realm = try Realm()
+                if let objectToDelete = realm.object(ofType: DeadlineItem.self, forPrimaryKey: id) {
+                    try realm.write {
+                        realm.delete(objectToDelete)
+                    }
+                    self.fetchItems()
+                }
+            } catch {
+                print("削除エラー: \(error.localizedDescription)")
             }
-            fetchItems() // 削除後にリストを更新
         }
     }
+
+
     
     // ピン留めアイテムの更新
     func pinItem(_ item: DeadlineItem) {

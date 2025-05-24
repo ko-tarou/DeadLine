@@ -9,6 +9,11 @@
 import SwiftUI
 import RealmSwift
 
+
+extension ObjectId: Identifiable {
+    public var id: ObjectId { self }
+}
+
 func printRealmPath() {
     if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
         print("Realm is located at:", realmURL.path)
@@ -20,7 +25,7 @@ func printRealmPath() {
 struct HomeView: View {
     @ObservedObject var viewModel = HomeViewModel()
     @State private var showingAddItemModal = false
-    @State private var selectedItem: DeadlineItem? = nil
+    @State private var selectedId: ObjectId? = nil
     @State private var isShowingDetailSheet = false
 
     
@@ -52,7 +57,7 @@ struct HomeView: View {
                                 days: item.days
                             )
                             .onTapGesture {
-                                selectedItem = item
+                                selectedId = item.id
                                 isShowingDetailSheet = true
                             }
                             .swipeActions(edge: .leading, allowsFullSwipe: false) {
@@ -67,7 +72,11 @@ struct HomeView: View {
                         .onDelete { indexSet in
                             indexSet.forEach { index in
                                 let item = viewModel.items[index]
-                                viewModel.deleteItem(item)
+                                do {
+                                    viewModel.deleteItemById(item.id)
+                                } catch {
+                                    print("delete error")
+                                }
                             }
                         }
                     } // Listここまで
@@ -86,16 +95,8 @@ struct HomeView: View {
         .sheet(isPresented: $showingAddItemModal){
             AddItemView(viewModel: viewModel)
         }
-        .sheet(item: $selectedItem, onDismiss: {
-            viewModel.fetchItems()
-        }) { item in
-            ShowItem(
-                id: item.id,
-                title: item.title,
-                date: viewModel.formattedDate(item.date),
-                days: item.days,
-                memo: item.memo
-            )
+        .sheet(item: $selectedId) { id in
+            ShowItem(viewModel: viewModel, id: id)
         }
 
     }
