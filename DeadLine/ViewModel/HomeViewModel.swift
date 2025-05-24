@@ -17,6 +17,7 @@ class HomeViewModel: ObservableObject {
             let realm = try Realm()
             let results = realm.objects(DeadlineItem.self)
             items = Array(results)
+            fetchPinnedItem()
         } catch {
             print("Realm読み込みエラー: \(error.localizedDescription)")
             items = []
