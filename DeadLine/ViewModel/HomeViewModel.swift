@@ -11,6 +11,7 @@ class HomeViewModel: ObservableObject {
     @Published var items: [DeadlineItem] = []
     @Published var pinnedItem: DeadlineItem? = nil
     
+    // 全Item取得
     func fetchItems() {
         do {
             let realm = try Realm()
@@ -21,8 +22,8 @@ class HomeViewModel: ObservableObject {
             items = []
         }
     }
-
     
+    // ピン留めID取得
     func fetchPinnedItem() {
         do {
             let realm = try Realm()
@@ -37,13 +38,32 @@ class HomeViewModel: ObservableObject {
         }
     }
 
-    
+    // Date型を文字列に変換
     func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy/MM/dd"
         return formatter.string(from: date)
     }
     
+    // 既存のアイテム更新
+    func updateItem(id: ObjectId, title: String, date: Date, memo: String) {
+        do {
+            let realm = try Realm()
+            if let existingItem = realm.object(ofType: DeadlineItem.self, forPrimaryKey: id) {
+                try realm.write {
+                    existingItem.title = title
+                    existingItem.date = date
+                    existingItem.memo = memo
+                }
+                fetchItems()
+            }
+        } catch {
+            print("更新エラー: \(error.localizedDescription)")
+        }
+    }
+
+    
+    // 追加
     func addItem(title: String, date: Date, memo: String) {
         let newItem = DeadlineItem()
         newItem.title = title
@@ -58,6 +78,7 @@ class HomeViewModel: ObservableObject {
         fetchItems() // 保存後に一覧更新
     }
     
+    // 削除
     func deleteItem(_ item: DeadlineItem) {
         let realm = try! Realm()
         if let objectToDelete = realm.object(ofType: DeadlineItem.self, forPrimaryKey: item.id) {
@@ -68,6 +89,7 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    // ピン留めアイテムの更新
     func pinItem(_ item: DeadlineItem) {
             let realm = try! Realm()
             

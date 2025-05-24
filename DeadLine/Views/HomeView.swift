@@ -18,7 +18,7 @@ func printRealmPath() {
 }
 
 struct HomeView: View {
-    @StateObject var viewModel = HomeViewModel()
+    @ObservedObject var viewModel = HomeViewModel()
     @State private var showingAddItemModal = false
     @State private var selectedItem: DeadlineItem? = nil
     @State private var isShowingDetailSheet = false
@@ -36,7 +36,7 @@ struct HomeView: View {
                     
                     // top
                     if let pinnedItem = viewModel.pinnedItem {
-                        TopView(days: pinnedItem.days, title: pinnedItem.title, date: HomeViewModel().formattedDate(pinnedItem.date))
+                        TopView(days: pinnedItem.days, title: pinnedItem.title, date: viewModel.formattedDate(pinnedItem.date))
                     } else {
                         Text("not pin")
                     }
@@ -86,8 +86,11 @@ struct HomeView: View {
         .sheet(isPresented: $showingAddItemModal){
             AddItemView(viewModel: viewModel)
         }
-        .sheet(item: $selectedItem) { item in
+        .sheet(item: $selectedItem, onDismiss: {
+            viewModel.fetchItems()
+        }) { item in
             ShowItem(
+                id: item.id,
                 title: item.title,
                 date: viewModel.formattedDate(item.date),
                 days: item.days,

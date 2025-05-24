@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 enum InputMode: String, CaseIterable, Identifiable {
     case date = "日付で入力"
@@ -18,6 +19,8 @@ struct AddItemView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: HomeViewModel
 
+    let id: ObjectId?
+
     @State private var title: String = ""
     @State private var date: Date = Date()
     @State private var days: String = ""
@@ -25,6 +28,17 @@ struct AddItemView: View {
     @State private var inputMode: InputMode = .date
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    
+    init(viewModel: HomeViewModel, id: ObjectId? = nil) {
+            self.viewModel = viewModel
+            self.id = id
+
+            _title = State(initialValue: "")
+            _date = State(initialValue: Date())
+            _days = State(initialValue: "")
+            _memo = State(initialValue: "")
+            _inputMode = State(initialValue: .date)
+        }
 
     var body: some View {
         NavigationView {
@@ -55,6 +69,29 @@ struct AddItemView: View {
                     .frame(height: 150)
                 
             }
+            .onAppear {
+                guard let id = id else { return }
+
+                do {
+                    let realm = try Realm()
+                    if let item = realm.object(ofType: DeadlineItem.self, forPrimaryKey: id) {
+                        title = item.title
+                        date = item.date
+                        memo = item.memo
+
+                        let daysFromNow = Calendar.current.dateComponents([.day], from: Date(), to: item.date).day ?? 0
+                        if daysFromNow >= 0 {
+                            inputMode = .days
+                            days = String(daysFromNow)
+                        } else {
+                            inputMode = .date
+                        }
+                    }
+                } catch {
+                    print("データ取得失敗: \(error.localizedDescription)")
+                }
+            }
+
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("キャンセル") {
@@ -62,23 +99,31 @@ struct AddItemView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("追加") {
+                    Button("保存") {
                         if title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                                     alertMessage = "タイトルを入力してください"
                                     showAlert = true
                                     return
                                 }
                         
+                        let adjustedDate: Date
                         if inputMode == .days {
                             guard let days = Int(days), days >= 0 else {
                                 alertMessage = "残り日数は0以上の数字で入力してください"
                                 showAlert = true
                                 return
                             }
-                            let adjustedDate = Calendar.current.date(byAdding: .day, value: days, to: Date()) ?? Date()
-                            viewModel.addItem(title: title, date: adjustedDate, memo: memo)
+                            adjustedDate = Calendar.current.date(byAdding: .day, value: days, to: Date()) ?? Date()
                         } else {
-                            viewModel.addItem(title: title, date: date, memo: memo)
+                            adjustedDate = date
+                        }
+                        
+                        if let id = id {
+                            // 更新処理
+                            viewModel.updateItem(id: id, title: title, date: adjustedDate, memo: memo)
+                        } else {
+                            // 新規追加
+                            viewModel.addItem(title: title, date: adjustedDate, memo: memo)
                         }
                         dismiss()
                     }
@@ -97,4 +142,11 @@ struct AddItemView: View {
 
 #Preview {
     AddItemView(viewModel: HomeViewModel())
+}
+
+#Preview {
+    AddItemView(
+        viewModel: HomeViewModel(),
+        id:ObjectId("6832091a463778d96afa2ce9")
+    )
 }
