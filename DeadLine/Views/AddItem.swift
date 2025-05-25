@@ -29,10 +29,13 @@ struct AddItemView: View {
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
     
+    @FocusState private var isTitleFieldFocused: Bool
+    @FocusState private var isDaysFieldFocused: Bool
+    
     init(viewModel: HomeViewModel, id: ObjectId? = nil) {
             self.viewModel = viewModel
             self.id = id
-
+//
             _title = State(initialValue: "")
             _date = State(initialValue: Date())
             _days = State(initialValue: "")
@@ -43,32 +46,71 @@ struct AddItemView: View {
     var body: some View {
         NavigationView {
             Form {
-                TextField("タイトル", text: $title)
-                    .frame(height: 60)
-                    .font(.title2)
-                
-                Section(header: Text("入力方法")) {
-                    Picker("入力方法", selection: $inputMode) {
-                        ForEach(InputMode.allCases) { mode in
-                            Text(mode.rawValue).tag(mode)
+                VStack(alignment: .leading, spacing: 2) {
+                    TextField("タイトルを入力", text: $title)
+                        .frame(maxWidth: .infinity)
+                        .font(.title2)
+                        .focused($isTitleFieldFocused)
+                    Rectangle() // アンダーラインとしてのRectangle
+                        .frame(height: 1.5)
+                        .foregroundColor(isTitleFieldFocused ? .blue : .gray.opacity(0.5))
+                        .padding(.top)
+                }
+                                
+                VStack{
+                    Section(header:
+                        Text("入力方法")
+                        .foregroundColor(.gray)
+                    ) {
+                        Picker("入力方法", selection: $inputMode) {
+                            ForEach(InputMode.allCases) { mode in
+                                Text(mode.rawValue).tag(mode)
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                    }
+                    Section() {
+                        if inputMode == .date {
+                            DatePicker("日付", selection: $date, displayedComponents: .date)
+                        } else {
+                            HStack {
+                                Text("残り日数")
+                                Spacer()
+                                VStack(alignment: .trailing, spacing: 2) { // TextFieldとアンダーラインをまとめる
+                                    TextField("0", text: $days)
+                                        .keyboardType(.numberPad)
+                                        .multilineTextAlignment(.trailing)
+                                        .frame(width: 80)
+                                        .focused($isDaysFieldFocused)
+                                    Rectangle() // アンダーライン
+                                        .frame(width: 70, height: 1.5)
+                                        .foregroundColor(isDaysFieldFocused ? .blue : Color.gray.opacity(0.5))
+                                }
+                            }
+                            .padding(.horizontal)
+                            .frame(minHeight: 50)
                         }
                     }
-                    .pickerStyle(SegmentedPickerStyle())
                 }
-                Section() {
-                    if inputMode == .date {
-                        DatePicker("日付", selection: $date, displayedComponents: .date)
-                                } else {
-                                    
-                                    TextField("残り日数", text: $days)
-                                        .keyboardType(.numberPad)
-                                }
+                .padding()
+                
+//                Divider()
+//                    .padding(.vertical)
+                
+                VStack(alignment: .leading){
+                    Text("memo")
+                    TextEditor(text: $memo)
+                        .frame(height: 150)
+                        .background(Color(UIColor.systemGray6)) // 背景を薄いグレーに
+                        .cornerRadius(8)
+                        .overlay( // 必要であれば枠線
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        )
                 }
-                
-                TextField("memo", text: $memo)
-                    .frame(height: 150)
-                
             }
+            .scrollContentBackground(.hidden)
+            .background(Color.white)
             .onAppear {
                 guard let id = id else { return }
 
