@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30FA73B22DE21AF3001E57BA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30FA73B12DE21AE9001E57BA /* .gitignore */; };
 		30FA73D42DE21E10001E57BA /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 30FA73802DDDD464001E57BA /* RealmSwift */; };
-        30FA73B22DE21AF3001E57BA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30FA73B12DE21AE9001E57BA /* .gitignore */; };
+		871FE7542DE2B33B0036E22C /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 871FE7532DE2B33B0036E22C /* RealmSwift */; };
+		871FE75C2DE2BDE00036E22C /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 30FA73802DDDD464001E57BA /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		87BECBE82DDF344E00530E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE72DDF344E00530E7A /* WidgetKit.framework */; };
 		87BECBEA2DDF344E00530E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE92DDF344E00530E7A /* SwiftUI.framework */; };
 		87BECBFB2DDF345000530E7A /* DeadLineWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -39,6 +41,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		871FE7562DE2B33B0036E22C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		871FE75D2DE2BDE00036E22C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				871FE75C2DE2BDE00036E22C /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		87BECBFC2DDF345000530E7A /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -53,7 +76,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-        30FA73B12DE21AE9001E57BA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		30FA73B12DE21AE9001E57BA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		871FE7652DE2CA920036E22C /* DeadLineWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeadLineWidgetExtension.entitlements; sourceTree = "<group>"; };
 		87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DeadLineWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		87BECBE72DDF344E00530E7A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		87BECBE92DDF344E00530E7A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -63,6 +87,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		871FE75F2DE2BF2B0036E22C /* Exceptions for "DeadLine" folder in "DeadLineWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/DeadlineItem.swift,
+				RealmConfig.swift,
+			);
+			target = 87BECBE42DDF344E00530E7A /* DeadLineWidgetExtension */;
+		};
 		87BECC002DDF345000530E7A /* Exceptions for "DeadLineWidget" folder in "DeadLineWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -92,6 +124,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				87D3A5A32DD5FD74005546F0 /* Exceptions for "DeadLine" folder in "DeadLine" target */,
+				871FE75F2DE2BF2B0036E22C /* Exceptions for "DeadLine" folder in "DeadLineWidgetExtension" target */,
 			);
 			path = DeadLine;
 			sourceTree = "<group>";
@@ -113,6 +146,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				871FE7542DE2B33B0036E22C /* RealmSwift in Frameworks */,
 				87BECBEA2DDF344E00530E7A /* SwiftUI.framework in Frameworks */,
 				87BECBE82DDF344E00530E7A /* WidgetKit.framework in Frameworks */,
 			);
@@ -155,6 +189,7 @@
 		87D3A5742DD5FD73005546F0 = {
 			isa = PBXGroup;
 			children = (
+				871FE7652DE2CA920036E22C /* DeadLineWidgetExtension.entitlements */,
 				30FA73B12DE21AE9001E57BA /* .gitignore */,
 				87D3A57F2DD5FD73005546F0 /* DeadLine */,
 				87D3A5942DD5FD74005546F0 /* DeadLineTests */,
@@ -164,6 +199,7 @@
 				87D3A57E2DD5FD73005546F0 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		87D3A57E2DD5FD73005546F0 /* Products */ = {
 			isa = PBXGroup;
@@ -186,6 +222,7 @@
 				87BECBE12DDF344E00530E7A /* Sources */,
 				87BECBE22DDF344E00530E7A /* Frameworks */,
 				87BECBE32DDF344E00530E7A /* Resources */,
+				871FE7562DE2B33B0036E22C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,6 +233,7 @@
 			);
 			name = DeadLineWidgetExtension;
 			packageProductDependencies = (
+				871FE7532DE2B33B0036E22C /* RealmSwift */,
 			);
 			productName = DeadLineWidgetExtension;
 			productReference = 87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */;
@@ -209,6 +247,7 @@
 				87D3A57A2DD5FD73005546F0 /* Frameworks */,
 				87D3A57B2DD5FD73005546F0 /* Resources */,
 				87BECBFC2DDF345000530E7A /* Embed Foundation Extensions */,
+				871FE75D2DE2BDE00036E22C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -410,6 +449,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DeadLineWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHP337D75C;
@@ -437,6 +477,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DeadLineWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHP337D75C;
@@ -577,6 +618,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				NEW_SETTING = "";
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -634,6 +676,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				NEW_SETTING = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -775,6 +818,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		30FA73802DDDD464001E57BA /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30FA737D2DDDD464001E57BA /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		871FE7532DE2B33B0036E22C /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 30FA737D2DDDD464001E57BA /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;

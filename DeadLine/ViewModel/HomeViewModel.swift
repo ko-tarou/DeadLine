@@ -6,6 +6,7 @@
 //
 import Foundation
 import RealmSwift
+import WidgetKit
 
 class HomeViewModel: ObservableObject {
     @Published var items: [DeadlineItem] = []
@@ -37,6 +38,8 @@ class HomeViewModel: ObservableObject {
             print("ピン留めアイテムの取得エラー: \(error.localizedDescription)")
             pinnedItem = nil
         }
+        
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     // Date型を文字列に変換
@@ -61,6 +64,8 @@ class HomeViewModel: ObservableObject {
         } catch {
             print("更新エラー: \(error.localizedDescription)")
         }
+        
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     
@@ -68,15 +73,19 @@ class HomeViewModel: ObservableObject {
     func addItem(title: String, date: Date, memo: String) {
         let newItem = DeadlineItem()
         newItem.title = title
-        newItem.date = date
-        newItem.memo = memo
+        newItem.date  = date
+        newItem.memo  = memo
 
-        let realm = try! Realm()
-        try! realm.write {
-            realm.add(newItem)
+        do {
+            let realm = try Realm()
+            try realm.write { realm.add(newItem) }
+        } catch {
+            // ここに原因が出る
+            print("⚠️ Realm WRITE error:", error)
         }
 
         fetchItems() // 保存後に一覧更新
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     // 削除
@@ -94,6 +103,8 @@ class HomeViewModel: ObservableObject {
                 print("削除エラー: \(error.localizedDescription)")
             }
         }
+        
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
 
@@ -114,6 +125,7 @@ class HomeViewModel: ObservableObject {
             }
             
         fetchPinnedItem()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
 }
