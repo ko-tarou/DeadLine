@@ -56,6 +56,7 @@ struct AddItemView: View {
                         .foregroundColor(isTitleFieldFocused ? .blue : .gray.opacity(0.5))
                         .padding(.top)
                 }
+                .listRowSeparator(.hidden)
                                 
                 VStack{
                     Section(header:
