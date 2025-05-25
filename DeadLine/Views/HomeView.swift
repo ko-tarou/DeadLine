@@ -36,8 +36,8 @@ struct HomeView: View {
                     // Header
                     
                     // top
-                    if let pinnedItem = viewModel.pinnedItem {
-                        TopView(days: pinnedItem.days, title: pinnedItem.title, date: viewModel.formattedDate(pinnedItem.date))
+                    if let currentPinnedItem = viewModel.pinnedItem { // 変数名を明確化
+                        TopView(viewModel: viewModel, item: currentPinnedItem) // DeadlineItem全体を渡す
                     } else {
                         Text("not pin")
                     }
@@ -56,13 +56,6 @@ struct HomeView: View {
                                     days: item.days,
                                     isPin: isCurrentItemPinned
                                 )
-                                
-//                                if viewModel.pinnedItem?.id == item.id {
-//                                    // ピンマーク（右上に表示）
-//                                    Image(systemName: "pin.circle.fill")
-//                                        .foregroundColor(.blue)
-////                                        .padding()
-//                                }
                             }
                             .listRowInsets(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
                             .listRowSeparator(.hidden)
@@ -130,9 +123,8 @@ struct addButtonView: View {
 
 // top
 struct TopView: View {
-    var days: Int
-    var title: String
-    var date: String
+    @ObservedObject var viewModel: HomeViewModel
+    var item: DeadlineItem
     
     var body: some View {
         HStack{
@@ -147,22 +139,30 @@ struct TopView: View {
                     }
                 
                 // 残り日数
-                Text("\(days)")
+                Text("\(item.days)")
                     .font(.title)
             }
             .padding()
             
             VStack(alignment: .leading){
                 // title
-                Text(title)
+                Text(item.title)
                     .font(.title2)
                 
                 // day
-                Text(date)
+                Text(viewModel.formattedDate(item.date))
             }
             
             Spacer()
             
+
+            Menu {
+                Button("ピンを外す") {
+                    viewModel.pinItem(item)
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+            }
         }
     }
 }
@@ -214,7 +214,7 @@ struct countItem: View {
     
 //    countItem(title:"title", date:"2025/07/29", days:100)
     
-    TopView(days: 10, title: "pinnedItem.title", date: "2025/3/3")
+//    TopView(days: 10, title: "pinnedItem.title", date: "2025/3/3", id: '')
 }
 
 #Preview{
