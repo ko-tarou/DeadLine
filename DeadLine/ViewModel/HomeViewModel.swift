@@ -107,10 +107,12 @@ class HomeViewModel: ObservableObject {
                 let pinnedItems = realm.objects(PinnedItem.self)
                 realm.delete(pinnedItems)
                 
-                // 新たにピン留めアイテムのUUIDを保存
-                let pinned = PinnedItem()
-                pinned.id = item.id
-                realm.add(pinned)
+                // 新たにピン留めアイテムのIDを保存
+                if pinnedItem?.id != item.id {
+                    let pinned = PinnedItem()
+                    pinned.id = item.id
+                    realm.add(pinned)
+                }
             }
             
         fetchPinnedItem()
