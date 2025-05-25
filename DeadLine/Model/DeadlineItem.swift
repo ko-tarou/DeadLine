@@ -26,5 +26,6 @@ class DeadlineItem: Object, Identifiable {
 
 class PinnedItem: Object {
     @Persisted(primaryKey: true) var id: ObjectId
+    @Persisted var pinnedId: ObjectId = ObjectId()
 }
 
