@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30FA73D42DE21E10001E57BA /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 30FA73802DDDD464001E57BA /* RealmSwift */; };
+        30FA73B22DE21AF3001E57BA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30FA73B12DE21AE9001E57BA /* .gitignore */; };
 		87BECBE82DDF344E00530E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE72DDF344E00530E7A /* WidgetKit.framework */; };
 		87BECBEA2DDF344E00530E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE92DDF344E00530E7A /* SwiftUI.framework */; };
 		87BECBFB2DDF345000530E7A /* DeadLineWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -51,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+        30FA73B12DE21AE9001E57BA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DeadLineWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		87BECBE72DDF344E00530E7A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		87BECBE92DDF344E00530E7A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -119,7 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30FA73812DDDD464001E57BA /* RealmSwift in Frameworks */,
+				30FA73D42DE21E10001E57BA /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +155,7 @@
 		87D3A5742DD5FD73005546F0 = {
 			isa = PBXGroup;
 			children = (
+				30FA73B12DE21AE9001E57BA /* .gitignore */,
 				87D3A57F2DD5FD73005546F0 /* DeadLine */,
 				87D3A5942DD5FD74005546F0 /* DeadLineTests */,
 				87D3A59E2DD5FD74005546F0 /* DeadLineUITests */,
@@ -307,7 +311,7 @@
 				30FA737D2DDDD464001E57BA /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 87D3A57E2DD5FD73005546F0 /* Products */;
+			productRefGroup = 87D3A5742DD5FD73005546F0;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -331,6 +335,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30FA73B22DE21AF3001E57BA /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

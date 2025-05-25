@@ -9,6 +9,11 @@
 import SwiftUI
 import RealmSwift
 
+
+extension ObjectId: Identifiable {
+    public var id: ObjectId { self }
+}
+
 func printRealmPath() {
     if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
         print("Realm is located at:", realmURL.path)
@@ -18,8 +23,11 @@ func printRealmPath() {
 }
 
 struct HomeView: View {
-    @StateObject var viewModel = HomeViewModel()
+    @ObservedObject var viewModel = HomeViewModel()
     @State private var showingAddItemModal = false
+    @State private var selectedId: ObjectId? = nil
+    @State private var isShowingDetailSheet = false
+
     
     var body: some View {
         NavigationView{
@@ -33,7 +41,7 @@ struct HomeView: View {
                     
                     // top
                     if let pinnedItem = viewModel.pinnedItem {
-                        TopView(days: pinnedItem.days, title: pinnedItem.title, date: HomeViewModel().formattedDate(pinnedItem.date))
+                        TopView(days: pinnedItem.days, title: pinnedItem.title, date: viewModel.formattedDate(pinnedItem.date))
                     } else {
                         Text("not pin")
                     }
@@ -43,12 +51,14 @@ struct HomeView: View {
                     // items
                     List{
                         ForEach(viewModel.items){ item in
-                            var title = item.title
-                            var date = item.date.formatted()
-                            var days = item.days
-                            
-                            NavigationLink(destination: Text("🍊")){
-                                countItem(title: title, date: date, days: days)
+                            countItem(
+                                title: item.title,
+                                date: item.date.formatted(),
+                                days: item.days
+                            )
+                            .onTapGesture {
+                                selectedId = item.id
+                                isShowingDetailSheet = true
                             }
                             .swipeActions(edge: .leading, allowsFullSwipe: false) {
                                         Button {
@@ -62,7 +72,11 @@ struct HomeView: View {
                         .onDelete { indexSet in
                             indexSet.forEach { index in
                                 let item = viewModel.items[index]
-                                viewModel.deleteItem(item)
+                                do {
+                                    viewModel.deleteItemById(item.id)
+                                } catch {
+                                    print("delete error")
+                                }
                             }
                         }
                     } // Listここまで
@@ -81,6 +95,10 @@ struct HomeView: View {
         .sheet(isPresented: $showingAddItemModal){
             AddItemView(viewModel: viewModel)
         }
+        .sheet(item: $selectedId) { id in
+            ShowItem(viewModel: viewModel, id: id)
+        }
+
     }
 }
 
