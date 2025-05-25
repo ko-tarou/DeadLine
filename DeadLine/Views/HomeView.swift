@@ -47,20 +47,27 @@ struct HomeView: View {
                     // items
                     List{
                         ForEach(viewModel.items){ item in
-                            ZStack{
+                            let isCurrentItemPinned = (viewModel.pinnedItem?.id == item.id)
+                            
+                            ZStack(alignment: .topLeading){
                                 countItem(
                                     title: item.title,
                                     date: item.date.formatted(),
-                                    days: item.days
+                                    days: item.days,
+                                    isPin: isCurrentItemPinned
                                 )
                                 
-                                if viewModel.pinnedItem?.id == item.id {
-                                    // ピンマーク（右上に表示）
-                                    Image(systemName: "pin.fill")
-                                        .foregroundColor(.yellow)
-                                        .padding(8)
-                                }
+//                                if viewModel.pinnedItem?.id == item.id {
+//                                    // ピンマーク（右上に表示）
+//                                    Image(systemName: "pin.circle.fill")
+//                                        .foregroundColor(.blue)
+////                                        .padding()
+//                                }
                             }
+                            .listRowInsets(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                            // ここまでアイテムの設定
                             .onTapGesture {
                                 selectedId = item.id
                                 isShowingDetailSheet = true
@@ -82,9 +89,12 @@ struct HomeView: View {
                             }
                         }
                     } // Listここまで
+                    .listStyle(.plain)
+                    .background(Color.clear)
                 } // VStack
+                .padding()
             }// ZStack
-            .background(Color.gray)
+            .background(Color(.systemGray6))
             .safeAreaInset(edge: .bottom, alignment: .trailing ){
                 addButtonView{
                     showingAddItemModal = true
@@ -162,16 +172,22 @@ struct countItem: View {
     var title: String
     var date: String
     var days: Int
+    var isPin: Bool
     
     var body: some View {
         ZStack{
             HStack{
+                if isPin {
+                    Image(systemName: "pin.fill")
+                        .foregroundColor(.blue)
+                        .font(.system(size: 23))
+                }
+                
                 VStack(alignment: .leading){
                     Text(title)
-                        .font(.title)
+                        .font(.title2)
                     
                     Text(date)
-                        .font(.title3)
                 }
                 
                 Spacer()
@@ -181,12 +197,11 @@ struct countItem: View {
                         .font(.title)
                     
                     Text("day")
-                        .font(.title3)
                 }
             }
-            .padding()
         }
-        .frame(width: 350, height: 100)
+        .padding()
+        .frame(maxWidth: .infinity)
         .background(Color.white)
         .cornerRadius(16)
     }
