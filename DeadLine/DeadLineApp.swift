@@ -19,14 +19,4 @@ struct DeadLineApp: SwiftUI.App {
             ContentView()
         }
     }
-    
-    func configureRealm() {
-        let config = Realm.Configuration(
-            schemaVersion: 1,
-            migrationBlock: { migration, oldSchemaVersion in
-                // マイグレーションが必要な場合に記述
-            }
-        )
-        Realm.Configuration.defaultConfiguration = config
-    }
 }
