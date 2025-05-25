@@ -64,7 +64,7 @@ struct HomeView: View {
                                         Button {
                                             viewModel.pinItem(item)
                                         } label: {
-                                            Label("ピン留め", systemImage: "pin.fill")
+                                            Label("", systemImage: "pin.fill")
                                         }
                                         .tint(.yellow)
                                 }
@@ -72,11 +72,8 @@ struct HomeView: View {
                         .onDelete { indexSet in
                             indexSet.forEach { index in
                                 let item = viewModel.items[index]
-                                do {
-                                    viewModel.deleteItemById(item.id)
-                                } catch {
-                                    print("delete error")
-                                }
+                                viewModel.deleteItemById(item.id)
+
                             }
                         }
                     } // Listここまで
