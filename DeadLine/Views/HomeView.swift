@@ -14,13 +14,13 @@ extension ObjectId: Identifiable {
     public var id: ObjectId { self }
 }
 
-func printRealmPath() {
-    if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
-        print("Realm is located at:", realmURL.path)
-    } else {
-        print("Could not determine Realm file URL.")
-    }
-}
+//func printRealmPath() {
+//    if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
+//        print("Realm is located at:", realmURL.path)
+//    } else {
+//        print("Could not determine Realm file URL.")
+//    }
+//}
 
 struct HomeView: View {
     @ObservedObject var viewModel = HomeViewModel()
@@ -33,10 +33,6 @@ struct HomeView: View {
         NavigationView{
             ZStack{
                 VStack{
-                    Button("show realm path") {
-                        printRealmPath()
-                    }
-                    
                     // Header
                     
                     // top
@@ -130,9 +126,21 @@ struct TopView: View {
     
     var body: some View {
         HStack{
-            // count
-            Text("\(days)")
-                .font(.title2)
+            // 左側
+            ZStack {
+                Circle()
+                    .fill(Color.clear)
+                    .frame(width: 130)
+                    .overlay{
+                        Circle()
+                            .stroke(Color.blue, lineWidth: 2)
+                    }
+                
+                // 残り日数
+                Text("\(days)")
+                    .font(.title)
+            }
+            .padding()
             
             VStack(alignment: .leading){
                 // title
@@ -142,6 +150,8 @@ struct TopView: View {
                 // day
                 Text(date)
             }
+            
+            Spacer()
             
         }
     }
@@ -187,7 +197,9 @@ struct countItem: View {
 #Preview {
 //    HomeView()
     
-    countItem(title:"title", date:"2025/07/29", days:100)
+//    countItem(title:"title", date:"2025/07/29", days:100)
+    
+    TopView(days: 10, title: "pinnedItem.title", date: "2025/3/3")
 }
 
 #Preview{
