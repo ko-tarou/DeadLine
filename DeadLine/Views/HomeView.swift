@@ -14,13 +14,13 @@ extension ObjectId: Identifiable {
     public var id: ObjectId { self }
 }
 
-func printRealmPath() {
-    if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
-        print("Realm is located at:", realmURL.path)
-    } else {
-        print("Could not determine Realm file URL.")
-    }
-}
+//func printRealmPath() {
+//    if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
+//        print("Realm is located at:", realmURL.path)
+//    } else {
+//        print("Could not determine Realm file URL.")
+//    }
+//}
 
 struct HomeView: View {
     @ObservedObject var viewModel = HomeViewModel()
@@ -33,15 +33,11 @@ struct HomeView: View {
         NavigationView{
             ZStack{
                 VStack{
-                    Button("show realm path") {
-                        printRealmPath()
-                    }
-                    
                     // Header
                     
                     // top
-                    if let pinnedItem = viewModel.pinnedItem {
-                        TopView(days: pinnedItem.days, title: pinnedItem.title, date: viewModel.formattedDate(pinnedItem.date))
+                    if let currentPinnedItem = viewModel.pinnedItem { // 変数名を明確化
+                        TopView(viewModel: viewModel, item: currentPinnedItem) // DeadlineItem全体を渡す
                     } else {
                         Text("not pin")
                     }
@@ -51,20 +47,20 @@ struct HomeView: View {
                     // items
                     List{
                         ForEach(viewModel.items){ item in
-                            ZStack{
+                            let isCurrentItemPinned = (viewModel.pinnedItem?.id == item.id)
+                            
+                            ZStack(alignment: .topLeading){
                                 countItem(
                                     title: item.title,
                                     date: item.date.formatted(),
-                                    days: item.days
+                                    days: item.days,
+                                    isPin: isCurrentItemPinned
                                 )
-                                
-                                if viewModel.pinnedItem?.id == item.id {
-                                    // ピンマーク（右上に表示）
-                                    Image(systemName: "pin.fill")
-                                        .foregroundColor(.yellow)
-                                        .padding(8)
-                                }
                             }
+                            .listRowInsets(EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0))
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                            // ここまでアイテムの設定
                             .onTapGesture {
                                 selectedId = item.id
                                 isShowingDetailSheet = true
@@ -86,9 +82,12 @@ struct HomeView: View {
                             }
                         }
                     } // Listここまで
+                    .listStyle(.plain)
+                    .background(Color.clear)
                 } // VStack
+                .padding()
             }// ZStack
-            .background(Color.gray)
+            .background(Color(.systemGray6))
             .safeAreaInset(edge: .bottom, alignment: .trailing ){
                 addButtonView{
                     showingAddItemModal = true
@@ -124,25 +123,46 @@ struct addButtonView: View {
 
 // top
 struct TopView: View {
-    var days: Int
-    var title: String
-    var date: String
+    @ObservedObject var viewModel: HomeViewModel
+    var item: DeadlineItem
     
     var body: some View {
         HStack{
-            // count
-            Text("\(days)")
-                .font(.title2)
+            // 左側
+            ZStack {
+                Circle()
+                    .fill(Color.clear)
+                    .frame(width: 130)
+                    .overlay{
+                        Circle()
+                            .stroke(Color.blue, lineWidth: 2)
+                    }
+                
+                // 残り日数
+                Text("\(item.days)")
+                    .font(.title)
+            }
+            .padding()
             
             VStack(alignment: .leading){
                 // title
-                Text(title)
+                Text(item.title)
                     .font(.title2)
                 
                 // day
-                Text(date)
+                Text(viewModel.formattedDate(item.date))
             }
             
+            Spacer()
+            
+
+            Menu {
+                Button("ピンを外す") {
+                    viewModel.pinItem(item)
+                }
+            } label: {
+                Image(systemName: "ellipsis")
+            }
         }
     }
 }
@@ -152,16 +172,22 @@ struct countItem: View {
     var title: String
     var date: String
     var days: Int
+    var isPin: Bool
     
     var body: some View {
         ZStack{
             HStack{
+                if isPin {
+                    Image(systemName: "pin.fill")
+                        .foregroundColor(.blue)
+                        .font(.system(size: 23))
+                }
+                
                 VStack(alignment: .leading){
                     Text(title)
-                        .font(.title)
+                        .font(.title2)
                     
                     Text(date)
-                        .font(.title3)
                 }
                 
                 Spacer()
@@ -171,12 +197,11 @@ struct countItem: View {
                         .font(.title)
                     
                     Text("day")
-                        .font(.title3)
                 }
             }
-            .padding()
         }
-        .frame(width: 350, height: 100)
+        .padding()
+        .frame(maxWidth: .infinity)
         .background(Color.white)
         .cornerRadius(16)
     }
@@ -187,7 +212,9 @@ struct countItem: View {
 #Preview {
 //    HomeView()
     
-    countItem(title:"title", date:"2025/07/29", days:100)
+//    countItem(title:"title", date:"2025/07/29", days:100)
+    
+//    TopView(days: 10, title: "pinnedItem.title", date: "2025/3/3", id: '')
 }
 
 #Preview{
