@@ -51,11 +51,20 @@ struct HomeView: View {
                     // items
                     List{
                         ForEach(viewModel.items){ item in
-                            countItem(
-                                title: item.title,
-                                date: item.date.formatted(),
-                                days: item.days
-                            )
+                            ZStack{
+                                countItem(
+                                    title: item.title,
+                                    date: item.date.formatted(),
+                                    days: item.days
+                                )
+                                
+                                if viewModel.pinnedItem?.id == item.id {
+                                    // ピンマーク（右上に表示）
+                                    Image(systemName: "pin.fill")
+                                        .foregroundColor(.yellow)
+                                        .padding(8)
+                                }
+                            }
                             .onTapGesture {
                                 selectedId = item.id
                                 isShowingDetailSheet = true
@@ -64,7 +73,7 @@ struct HomeView: View {
                                         Button {
                                             viewModel.pinItem(item)
                                         } label: {
-                                            Label("", systemImage: "pin.fill")
+                                            Image(systemName: viewModel.pinnedItem?.id == item.id ? "pin.slash.fill" : "pin.fill")
                                         }
                                         .tint(.yellow)
                                 }
