@@ -18,12 +18,37 @@ struct ShowItem: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                Text(title)
-                Text(date)
-                Text("\(days)")
-                Text("day")
-                Text(memo)
+            ZStack{
+                VStack{
+                    Text(title)
+                        .font(.title)
+                                            
+                    Text(date)
+                    
+                    VStack{
+                        Text("\(days)")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        Text("day")
+                    }
+                    .padding()
+                    
+                    Divider()
+                        .padding(.vertical)
+                    
+                    VStack(alignment: .leading){
+                        Text("-memo-")
+                            .foregroundColor(.gray)
+                            .fontWeight(.bold)
+                        Text(memo)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.leading, .trailing])
+                    
+                    Spacer()
+                }
+                .padding([.leading, .trailing])
+                .padding(.top, 30)
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -87,5 +112,5 @@ struct ShowItem: View {
 }
 
 #Preview {
-//    ShowItem(id: ObjectId("6831e2010445556254a6bd18"))
+    ShowItem(viewModel: HomeViewModel(), id: ObjectId("68322467e2664f04688f9933"), title: "Title", date: "2025/4/4", days: 300, memo: "memomemo")
 }

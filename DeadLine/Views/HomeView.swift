@@ -92,6 +92,7 @@ struct HomeView: View {
                 addButtonView{
                     showingAddItemModal = true
                 } //プラスボタン
+                .padding()
             }
         }// NavigationView
         .onAppear{
