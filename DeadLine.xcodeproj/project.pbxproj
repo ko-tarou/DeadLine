@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		30FA73B22DE21AF3001E57BA /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 30FA73B12DE21AE9001E57BA /* .gitignore */; };
 		30FA73D42DE21E10001E57BA /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 30FA73802DDDD464001E57BA /* RealmSwift */; };
+		870C52192E01135200C75386 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 30FA73802DDDD464001E57BA /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		87BECBE82DDF344E00530E7A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE72DDF344E00530E7A /* WidgetKit.framework */; };
 		87BECBEA2DDF344E00530E7A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87BECBE92DDF344E00530E7A /* SwiftUI.framework */; };
 		87BECBFB2DDF345000530E7A /* DeadLineWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -39,6 +40,27 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		870C52152E01129900C75386 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		870C521A2E01135200C75386 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				870C52192E01135200C75386 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		87BECBFC2DDF345000530E7A /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -63,6 +85,27 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		870C52222E014A8000C75386 /* Exceptions for "DeadLine" folder in "DeadLineTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SwiftDataConfig.swift,
+			);
+			target = 87D3A5902DD5FD74005546F0 /* DeadLineTests */;
+		};
+		870C52232E014A8000C75386 /* Exceptions for "DeadLine" folder in "DeadLineUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SwiftDataConfig.swift,
+			);
+			target = 87D3A59A2DD5FD74005546F0 /* DeadLineUITests */;
+		};
+		870C52242E014A8000C75386 /* Exceptions for "DeadLine" folder in "DeadLineWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SwiftDataConfig.swift,
+			);
+			target = 87BECBE42DDF344E00530E7A /* DeadLineWidgetExtension */;
+		};
 		87BECC002DDF345000530E7A /* Exceptions for "DeadLineWidget" folder in "DeadLineWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -92,6 +135,9 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				87D3A5A32DD5FD74005546F0 /* Exceptions for "DeadLine" folder in "DeadLine" target */,
+				870C52222E014A8000C75386 /* Exceptions for "DeadLine" folder in "DeadLineTests" target */,
+				870C52232E014A8000C75386 /* Exceptions for "DeadLine" folder in "DeadLineUITests" target */,
+				870C52242E014A8000C75386 /* Exceptions for "DeadLine" folder in "DeadLineWidgetExtension" target */,
 			);
 			path = DeadLine;
 			sourceTree = "<group>";
@@ -186,6 +232,7 @@
 				87BECBE12DDF344E00530E7A /* Sources */,
 				87BECBE22DDF344E00530E7A /* Frameworks */,
 				87BECBE32DDF344E00530E7A /* Resources */,
+				870C52152E01129900C75386 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -209,6 +256,7 @@
 				87D3A57A2DD5FD73005546F0 /* Frameworks */,
 				87D3A57B2DD5FD73005546F0 /* Resources */,
 				87BECBFC2DDF345000530E7A /* Embed Foundation Extensions */,
+				870C521A2E01135200C75386 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
