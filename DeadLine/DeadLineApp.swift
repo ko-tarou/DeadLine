@@ -6,17 +6,20 @@
 //
 
 import SwiftUI
-import RealmSwift
+import SwiftData
 
 @main
 struct DeadLineApp: SwiftUI.App {
+    
     init() {
-        configureRealm()
+        // デバッグ情報の出力
+        SwiftDataConfig.printDatabaseInfo()
     }
-
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modelContainer(SwiftDataConfig.createSharedModelContainer(DeadlineItem.self))
         }
     }
 }
