@@ -76,6 +76,7 @@
 
 /* Begin PBXFileReference section */
 		30FA73B12DE21AE9001E57BA /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		873ABF712E02C45A002C2C1B /* DeadLineWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DeadLineWidgetExtension.entitlements; sourceTree = "<group>"; };
 		87BECBE52DDF344E00530E7A /* DeadLineWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DeadLineWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		87BECBE72DDF344E00530E7A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		87BECBE92DDF344E00530E7A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -201,6 +202,7 @@
 		87D3A5742DD5FD73005546F0 = {
 			isa = PBXGroup;
 			children = (
+				873ABF712E02C45A002C2C1B /* DeadLineWidgetExtension.entitlements */,
 				30FA73B12DE21AE9001E57BA /* .gitignore */,
 				87D3A57F2DD5FD73005546F0 /* DeadLine */,
 				87D3A5942DD5FD74005546F0 /* DeadLineTests */,
@@ -458,6 +460,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DeadLineWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHP337D75C;
@@ -485,6 +488,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DeadLineWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CHP337D75C;

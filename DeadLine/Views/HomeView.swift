@@ -15,6 +15,16 @@ struct WidgetItemData: Codable {
     let date: Date
     let memo: String
     let isPinned: Bool
+    
+    // 残り日数を計算
+    var daysRemaining: Int {
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let startOfTargetDate = calendar.startOfDay(for: date)
+        
+        let components = calendar.dateComponents([.day], from: startOfToday, to: startOfTargetDate)
+        return components.day ?? 0
+    }
 }
 
 struct HomeView: View {
@@ -27,6 +37,11 @@ struct HomeView: View {
     @State private var showingAddItemModal = false
     @State private var selectedItem: DeadlineItem? = nil
     @State private var isShowingDetailSheet = false
+    @State private var showingDebugInfo = false
+    
+    // App Groups 設定
+    private let appGroupId = "group.deadline.app.shared"
+    private let dataKey = "widgetData"
     
     // ピン留めされたアイテムを計算プロパティとして取得
     private var pinnedItem: DeadlineItem? {
@@ -44,9 +59,7 @@ struct HomeView: View {
                             updateWidgetData()
                         }
                     } else {
-                        Text("ピン留めされたアイテムがありません")
-                            .foregroundColor(.secondary)
-                            .padding()
+                        EmptyPinnedView()
                     }
                     
                     // Items List
@@ -82,37 +95,83 @@ struct HomeView: View {
                     }
                     .listStyle(.plain)
                     .background(Color.clear)
+                    
+                    // Debug Info (開発時のみ)
+                    #if DEBUG
+                    if showingDebugInfo {
+                        DebugInfoView(items: items, appGroupId: appGroupId, dataKey: dataKey)
+                    }
+                    #endif
                 }
                 .padding()
             }
             .background(Color(.systemGray6))
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
-                AddButtonView {
-                    showingAddItemModal = true
+                HStack {
+                    #if DEBUG
+                    // デバッグボタン
+                    Button {
+                        showingDebugInfo.toggle()
+                    } label: {
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 30))
+                            .foregroundColor(.secondary)
+                    }
+                    #endif
+                    
+                    Spacer()
+                    
+                    AddButtonView {
+                        showingAddItemModal = true
+                    }
                 }
                 .padding()
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("App Groups確認") {
+                        checkAppGroupsConfiguration()
+                    }
+                    .font(.caption)
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Widget更新") {
+                        forceUpdateWidget()
+                    }
+                    .font(.caption)
+                }
+            }
         }
         .onAppear {
+            print("🏠 HomeView: 画面表示")
+            checkAppGroupsConfiguration()
             // 初回表示時にWidget データを更新
             updateWidgetData()
         }
-        .onChange(of: items) { _, _ in
+        .onChange(of: items) { oldItems, newItems in
+            print("🔄 HomeView: アイテム変更検出 - 旧:\(oldItems.count) 新:\(newItems.count)")
             // アイテムが変更されたらWidget データを更新
             updateWidgetData()
         }
         .sheet(isPresented: $showingAddItemModal) {
             AddItemView()
                 .onDisappear {
+                    print("➕ HomeView: 追加モーダル閉じた")
                     // モーダル閉じた時にWidget データを更新
-                    updateWidgetData()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        updateWidgetData()
+                    }
                 }
         }
         .sheet(item: $selectedItem) { item in
             ShowItemView(item: item)
                 .onDisappear {
+                    print("👁️ HomeView: 詳細画面閉じた")
                     // 詳細画面閉じた時にWidget データを更新
-                    updateWidgetData()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        updateWidgetData()
+                    }
                 }
         }
     }
@@ -120,22 +179,28 @@ struct HomeView: View {
     // MARK: - Private Methods
     
     private func togglePinItem(_ item: DeadlineItem) {
+        print("📌 HomeView: ピン切り替え開始 - \(item.title)")
+        
         // 他のアイテムのピンを外す
         for existingItem in items {
             if existingItem.isPinned && existingItem.id != item.id {
                 existingItem.isPinned = false
+                print("📌 HomeView: ピン解除 - \(existingItem.title)")
             }
         }
         
         // 選択されたアイテムのピン状態をトグル
-        item.isPinned.toggle()
+        let newPinState = !item.isPinned
+        item.isPinned = newPinState
+        
+        print("📌 HomeView: ピン状態変更 - \(item.title): \(newPinState)")
         
         // 変更を保存
         do {
             try modelContext.save()
-            print("ピン切り替え完了: \(item.title)")
+            print("✅ HomeView: ピン切り替え保存完了")
         } catch {
-            print("ピン切り替えエラー: \(error)")
+            print("❌ HomeView: ピン切り替えエラー: \(error)")
         }
         
         // Widget データを更新
@@ -143,18 +208,23 @@ struct HomeView: View {
     }
     
     private func deleteItems(offsets: IndexSet) {
+        print("🗑️ HomeView: 削除開始")
+        
         withAnimation {
+            var deletedTitles: [String] = []
+            
             for index in offsets {
                 let item = items[index]
-                print("削除予定: \(item.title)")
+                deletedTitles.append(item.title)
+                print("🗑️ HomeView: 削除予定 - \(item.title)")
                 modelContext.delete(item)
             }
             
             do {
                 try modelContext.save()
-                print("削除完了")
+                print("✅ HomeView: 削除完了 - \(deletedTitles.joined(separator: ", "))")
             } catch {
-                print("削除エラー: \(error)")
+                print("❌ HomeView: 削除エラー: \(error)")
             }
         }
         
@@ -162,13 +232,59 @@ struct HomeView: View {
         updateWidgetData()
     }
     
-    // MARK: - Widget Data Sync
+    // MARK: - App Groups Configuration Check
     
-    private func updateWidgetData() {
-        guard let userDefaults = UserDefaults(suiteName: "group.deadline.shared") else {
-            print("⚠️ App Group UserDefaults にアクセスできません")
+    private func checkAppGroupsConfiguration() {
+        print("🔧 HomeView: App Groups 設定確認開始")
+        print("🔧 HomeView: App Group ID: \(appGroupId)")
+        
+        guard let userDefaults = UserDefaults(suiteName: appGroupId) else {
+            print("❌ HomeView: App Groups UserDefaults にアクセスできません")
+            print("❌ HomeView: 以下を確認してください:")
+            print("   1. メインアプリのApp Groups設定")
+            print("   2. Widget ExtensionのApp Groups設定")
+            print("   3. App Group ID: \(appGroupId)")
             return
         }
+        
+        print("✅ HomeView: App Groups UserDefaults アクセス成功")
+        
+        // テストデータの書き込み・読み込み
+        let testKey = "appGroupTest"
+        let testValue = "test_\(Date().timeIntervalSince1970)"
+        
+        userDefaults.set(testValue, forKey: testKey)
+        userDefaults.synchronize()
+        
+        if let retrievedValue = userDefaults.string(forKey: testKey),
+           retrievedValue == testValue {
+            print("✅ HomeView: App Groups データ読み書きテスト成功")
+        } else {
+            print("❌ HomeView: App Groups データ読み書きテスト失敗")
+        }
+        
+        // 既存のWidget データ確認
+        if let existingData = userDefaults.data(forKey: dataKey) {
+            print("📦 HomeView: 既存Widget データ: \(existingData.count) bytes")
+        } else {
+            print("📦 HomeView: 既存Widget データなし")
+        }
+        
+        print("🔧 HomeView: App Groups 設定確認完了")
+    }
+    
+    // MARK: - Widget Data Sync (Step 1: 強制同期対応)
+    
+    private func updateWidgetData() {
+        print("🔄 HomeView: Widget データ更新開始")
+        print("🔄 HomeView: 使用App Group ID: \(appGroupId)")
+        
+        guard let userDefaults = UserDefaults(suiteName: appGroupId) else {
+            print("❌ HomeView: App Group UserDefaults アクセス失敗")
+            return
+        }
+        
+        print("✅ HomeView: App Groups UserDefaults アクセス成功")
         
         // 現在のアイテムをWidget用データに変換
         let widgetData = items.map { item in
@@ -180,22 +296,83 @@ struct HomeView: View {
             )
         }
         
+        print("📊 HomeView: 変換データ数: \(widgetData.count)")
+        for (index, item) in widgetData.enumerated() {
+            print("📊 HomeView[\(index)]: \(item.title) - ピン: \(item.isPinned)")
+        }
+        
         do {
-            let data = try JSONEncoder().encode(widgetData)
-            userDefaults.set(data, forKey: "widgetData")
+            let encoder = JSONEncoder()
+            encoder.dateEncodingStrategy = .iso8601
+            let data = try encoder.encode(widgetData)
+            
+            print("📦 HomeView: エンコード完了 - \(data.count) bytes")
+            
+            // 既存データを削除してから新規保存
+            userDefaults.removeObject(forKey: dataKey)
+            userDefaults.synchronize()
+            print("🗑️ HomeView: 既存データ削除完了")
+            
+            // データを保存
+            userDefaults.set(data, forKey: dataKey)
+            
+            // 複数回同期を試行
+            for i in 1...5 {
+                let syncResult = userDefaults.synchronize()
+                print("📱 HomeView: 同期試行\(i): \(syncResult)")
+                Thread.sleep(forTimeInterval: 0.2) // 少し長めに待機
+            }
+            
+            // 保存確認
+            if let savedData = userDefaults.data(forKey: dataKey) {
+                print("✅ HomeView: データ保存確認 - \(savedData.count) bytes")
+                
+                // 保存されたデータの内容確認
+                let hexString = savedData.map { String(format: "%02x", $0) }.joined()
+                print("📦 HomeView: 保存データ(hex): \(String(hexString.prefix(100)))...")
+                
+                // デコードテスト
+                do {
+                    let decoder = JSONDecoder()
+                    decoder.dateDecodingStrategy = .iso8601
+                    let decodedData = try decoder.decode([WidgetItemData].self, from: savedData)
+                    print("✅ HomeView: デコードテスト成功 - \(decodedData.count) 件")
+                    
+                    for (index, item) in decodedData.enumerated() {
+                        print("📦 HomeView デコード[\(index)]: \(item.title) - ピン: \(item.isPinned)")
+                    }
+                    
+                } catch {
+                    print("❌ HomeView: デコードテストエラー: \(error)")
+                }
+                
+            } else {
+                print("❌ HomeView: データ保存失敗 - 保存確認でデータが見つからない")
+            }
+            
+            // 追加確認：すべてのキーを表示
+            let allKeys = userDefaults.dictionaryRepresentation().keys
+            print("📱 HomeView: 保存後の全キー: \(Array(allKeys))")
             
             // Widget を更新
             WidgetCenter.shared.reloadAllTimelines()
             
-            print("✅ Widget データ更新完了: \(widgetData.count) 件")
-            
-            // デバッグ情報
-            if let pinnedData = widgetData.first(where: { $0.isPinned }) {
-                print("📌 ピン留めアイテム: \(pinnedData.title)")
-            }
+            print("✅ HomeView: Widget データ更新完了 - \(widgetData.count) 件")
             
         } catch {
-            print("❌ Widget データエンコードエラー: \(error)")
+            print("❌ HomeView: Widget データエンコードエラー: \(error)")
+        }
+    }
+
+    
+    private func forceUpdateWidget() {
+        print("🔄 HomeView: 強制Widget更新")
+        updateWidgetData()
+        
+        // 少し遅延してもう一度更新
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            WidgetCenter.shared.reloadAllTimelines()
+            print("🔄 HomeView: 遅延Widget更新完了")
         }
     }
     
@@ -209,6 +386,106 @@ struct HomeView: View {
         print("==================")
     }
 }
+
+// MARK: - Empty Pinned View
+
+struct EmptyPinnedView: View {
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "pin.slash")
+                .font(.system(size: 40))
+                .foregroundColor(.gray)
+            
+            Text("ピン留めされたアイテムがありません")
+                .font(.headline)
+                .foregroundColor(.secondary)
+            
+            Text("アイテムを左にスワイプしてピン留めできます")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color.white.opacity(0.8))
+        .cornerRadius(16)
+        .shadow(radius: 1)
+    }
+}
+
+// MARK: - Debug Info View
+
+#if DEBUG
+struct DebugInfoView: View {
+    let items: [DeadlineItem]
+    let appGroupId: String
+    let dataKey: String
+    
+    @State private var widgetDataInfo: String = "確認中..."
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("🐛 デバッグ情報")
+                .font(.headline)
+                .foregroundColor(.orange)
+            
+            Group {
+                Text("総アイテム数: \(items.count)")
+                Text("ピン留め数: \(items.filter { $0.isPinned }.count)")
+                
+                if let pinnedItem = items.first(where: { $0.isPinned }) {
+                    Text("ピン留めアイテム: \(pinnedItem.title)")
+                    Text("残り日数: \(pinnedItem.daysRemaining)日")
+                } else {
+                    Text("ピン留めアイテム: なし")
+                }
+                
+                Text("App Group ID: \(appGroupId)")
+                Text("Data Key: \(dataKey)")
+                Text("Widget データ: \(widgetDataInfo)")
+            }
+            .font(.caption)
+            
+            HStack {
+                Button("Widget強制更新") {
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                
+                Button("データ確認") {
+                    checkWidgetData()
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+        }
+        .padding()
+        .background(Color.orange.opacity(0.1))
+        .cornerRadius(8)
+        .onAppear {
+            checkWidgetData()
+        }
+    }
+    
+    private func checkWidgetData() {
+        guard let userDefaults = UserDefaults(suiteName: appGroupId),
+              let data = userDefaults.data(forKey: dataKey) else {
+            widgetDataInfo = "なし"
+            return
+        }
+        
+        do {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let items = try decoder.decode([WidgetItemData].self, from: data)
+            widgetDataInfo = "\(items.count)件 (\(data.count)bytes)"
+        } catch {
+            widgetDataInfo = "エラー: \(error.localizedDescription)"
+        }
+    }
+}
+#endif
 
 // MARK: - Add Button View
 
@@ -255,6 +532,17 @@ struct TopView: View {
             .padding()
             
             VStack(alignment: .leading, spacing: 6) {
+                // ピン留めインジケーター
+                HStack {
+                    Image(systemName: "pin.fill")
+                        .foregroundColor(.blue)
+                        .font(.caption)
+                    Text("ピン留め中")
+                        .font(.caption2)
+                        .foregroundColor(.blue)
+                        .fontWeight(.medium)
+                }
+                
                 // タイトル
                 Text(item.title)
                     .font(.title2)
@@ -282,8 +570,8 @@ struct TopView: View {
                     unpinItem()
                 }
                 
-                Button("編集") {
-                    // 編集機能は後で実装
+                Button("詳細を見る") {
+                    // 詳細表示機能は後で実装
                 }
             } label: {
                 Image(systemName: "ellipsis")
@@ -295,6 +583,10 @@ struct TopView: View {
         .background(Color.white)
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.blue.opacity(0.2), lineWidth: 1)
+        )
     }
     
     // MARK: - Computed Properties
@@ -339,13 +631,14 @@ struct TopView: View {
     }
     
     private func unpinItem() {
+        print("📌 TopView: ピン解除 - \(item.title)")
         item.isPinned = false
         do {
             try modelContext.save()
             onPinToggle() // コールバック実行
-            print("ピン解除完了: \(item.title)")
+            print("✅ TopView: ピン解除完了")
         } catch {
-            print("ピン解除エラー: \(error)")
+            print("❌ TopView: ピン解除エラー: \(error)")
         }
     }
 }

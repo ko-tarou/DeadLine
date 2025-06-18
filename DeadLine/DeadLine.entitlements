@@ -14,7 +14,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.deadline.shared</string>
+		<string>group.deadline.app.shared</string>
 	</array>
 	<key>com.apple.security.files.user-selected.read-only</key>
 	<true/>
