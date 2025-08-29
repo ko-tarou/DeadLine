@@ -292,7 +292,7 @@ struct TopView: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color.clear)
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
     }
@@ -362,7 +362,7 @@ struct CountItem: View {
         if isPin {
             return Color.blue.opacity(0.05)
         } else {
-            return Color.white
+            return Color(.itemContent)
         }
     }
     
