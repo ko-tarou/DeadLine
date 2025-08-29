@@ -360,7 +360,7 @@ struct CountItem: View {
     
     private var itemBackgroundColor: Color {
         if isPin {
-            return Color.blue.opacity(0.05)
+            return Color(.pinnedItemContent)
         } else {
             return Color(.itemContent)
         }
@@ -368,7 +368,7 @@ struct CountItem: View {
     
     private var borderColor: Color {
         if isPin {
-            return Color.blue.opacity(0.3)
+            return Color(.pinnedItemBorder)
         } else {
             return Color.clear
         }
