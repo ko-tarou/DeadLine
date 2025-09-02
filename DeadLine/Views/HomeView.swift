@@ -35,7 +35,7 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
+            ZStack(alignment: .bottomTrailing) {
                 VStack {
                     // Header & Top View
                     if let currentPinnedItem = pinnedItem {
@@ -84,14 +84,14 @@ struct HomeView: View {
                     .background(Color.clear)
                 }
                 .padding()
-            }
-            .background(Color(.systemGray6))
-            .safeAreaInset(edge: .bottom, alignment: .trailing) {
+                
+                // 右下にAddButton
                 AddButtonView {
                     showingAddItemModal = true
                 }
-                .padding()
+                .padding(.horizontal, 20)
             }
+            .background(Color(.systemGray6))
         }
         .onAppear {
             // 初回表示時にWidget データを更新
@@ -292,7 +292,7 @@ struct TopView: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color.clear)
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.1), radius: 3, x: 0, y: 2)
     }
@@ -360,15 +360,15 @@ struct CountItem: View {
     
     private var itemBackgroundColor: Color {
         if isPin {
-            return Color.blue.opacity(0.05)
+            return Color(.pinnedItemContent)
         } else {
-            return Color.white
+            return Color(.itemContent)
         }
     }
     
     private var borderColor: Color {
         if isPin {
-            return Color.blue.opacity(0.3)
+            return Color(.pinnedItemBorder)
         } else {
             return Color.clear
         }
