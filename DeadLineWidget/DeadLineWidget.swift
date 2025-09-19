@@ -23,12 +23,12 @@ struct WidgetItemData: Codable {
     }
 }
 
-// MARK: - Widget データ管理 (Step 2: デバッグ強化版)
+// MARK: - Widget データ管理
 struct WidgetDataManager {
     static let appGroupIdentifier = "group.deadline.app.shared"
     static let dataKey = "widgetData"
     
-    // UserDefaults からデータを取得 (Step 2: デバッグ強化版)
+    // UserDefaults からデータを取得
     static func loadWidgetData() -> [WidgetItemData] {
         print("📱 Widget: データ読み込み開始")
         print("📱 Widget: App Group ID: \(appGroupIdentifier)")
@@ -291,7 +291,7 @@ struct SimpleEntry: TimelineEntry {
     }
 }
 
-// ───── View ─────
+// ───── View (サイズ別最適化版) ─────
 struct DeadLineWidgetEntryView: View {
     var entry: SimpleEntry
     @Environment(\.widgetFamily) private var family
@@ -300,103 +300,347 @@ struct DeadLineWidgetEntryView: View {
         ZStack {
             // 背景
             ContainerRelativeShape()
-                .fill(.tertiary)
+                .fill(Color.white)
             
-            VStack(spacing: spacing(for: family)) {
-                if let title = entry.itemTitle,
-                   let days = entry.daysLeft {
-                    
-                    // ピン留めインジケーター
-                    if entry.isPinned && showPinIndicator(for: family) {
-                        HStack {
-                            Spacer()
-                            Image(systemName: "pin.fill")
-                                .font(.caption)
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    
-                    // タイトル
-                    Text(title)
-                        .font(titleFont(for: family))
-                        .lineLimit(titleLineLimit(for: family))
-                        .minimumScaleFactor(0.7)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.primary)
-                    
-                    Spacer()
-                    
-                    // 残り日数
-                    VStack(spacing: 2) {
-                        Text("\(abs(days))")
-                            .font(daysFont(for: family))
-                            .fontWeight(.bold)
-                            .foregroundColor(daysColor(for: days))
-                        
-                        Text(daysLabel(for: days))
-                            .font(dayLabelFont(for: family))
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    // ステータス
-                    if family != .systemSmall {
-                        statusText(for: days)
-                    }
-                    
-                } else {
-                    // データなし
-                    VStack(spacing: 8) {
-                        Image(systemName: "calendar.badge.exclamationmark")
-                            .font(.system(size: iconSize(for: family)))
-                            .foregroundColor(.gray)
-                        
-                        VStack(spacing: 4) {
-                            Text("タスクなし")
-                                .font(noDataFont(for: family))
-                                .foregroundColor(.secondary)
-                                .fontWeight(.medium)
-                            
-                            if family != .systemSmall {
-                                Text("App Groups設定を確認")
-                                    .font(.system(size: 8))
-                                    .foregroundColor(.secondary)
-                                    .multilineTextAlignment(.center)
-                            }
-                        }
-                    }
+            if let title = entry.itemTitle,
+               let days = entry.daysLeft {
+                
+                // データがある場合のレイアウト
+                switch family {
+                case .systemSmall:
+                    smallWidgetLayout(title: title, days: days)
+                case .systemMedium:
+                    mediumWidgetLayout(title: title, days: days)
+                case .systemLarge:
+                    largeWidgetLayout(title: title, days: days)
+                default:
+                    mediumWidgetLayout(title: title, days: days)
                 }
+                
+            } else {
+                // データなしの場合
+                noDataLayout()
             }
-            .padding(paddingSize(for: family))
         }
         .onAppear {
             print("🎨 Widget View: 表示開始")
             print("🎨 Widget View: エントリ内容: \(entry.debugDescription)")
+            print("🎨 Widget View: ファミリー: \(family)")
         }
     }
-    
+
+    // MARK: - Layout Variants
+
     @ViewBuilder
-    private func statusText(for days: Int) -> some View {
-        Group {
-            switch days {
-            case ..<0:
-                Text("期限切れ")
-                    .foregroundColor(.red)
-            case 0:
-                Text("今日まで")
-                    .foregroundColor(.orange)
-            case 1...3:
-                Text("急ぎ")
-                    .foregroundColor(.yellow)
-            default:
-                EmptyView()
+    private func smallWidgetLayout(title: String, days: Int) -> some View {
+        VStack(spacing: 4) {
+            // ピン留めインジケーター（小さく）
+            if entry.isPinned {
+                HStack {
+                    Spacer()
+                    Image(systemName: "pin.fill")
+                        .font(.system(size: 8))
+                        .foregroundColor(.blue)
+                }
+            }
+            
+            // タイトル（上部、コンパクト）
+            Text(title)
+                .font(.system(size: 10, weight: .medium))
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.primary)
+            
+            Spacer()
+            
+            // 残り日数（中央、大きく）
+            VStack(spacing: 1) {
+                Text("\(abs(days))")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundColor(daysColor(for: days))
+                
+                Text(daysLabel(for: days))
+                    .font(.system(size: 8, weight: .medium))
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            // ステータス（下部、小さく）
+            if let status = statusText(for: days) {
+                Text(status)
+                    .font(.system(size: 7, weight: .semibold))
+                    .foregroundColor(daysColor(for: days))
             }
         }
-        .font(.caption2)
-        .fontWeight(.semibold)
+        .padding(10)
     }
-    
+
+    @ViewBuilder
+    private func mediumWidgetLayout(title: String, days: Int) -> some View {
+        HStack(spacing: 0) {
+            // 左側：残り日数（円形）- 少し小さく
+            ZStack {
+                Circle()
+                    .fill(daysColor(for: days).opacity(0.1))
+                    .frame(width: 70, height: 70)
+                    .overlay(
+                        Circle()
+                            .stroke(daysColor(for: days), lineWidth: 3)
+                    )
+                
+                VStack(spacing: 1) {
+                    Text("\(abs(days))")
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .foregroundColor(daysColor(for: days))
+                    
+                    Text(daysLabel(for: days))
+                        .font(.system(size: 8, weight: .medium))
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.leading, 12)
+            
+            // 中央：詳細情報 - より幅を取る
+            VStack(alignment: .leading, spacing: 8) {
+                // ピン留めインジケーター
+                if entry.isPinned {
+                    HStack {
+                        Image(systemName: "pin.fill")
+                            .font(.system(size: 10))
+                            .foregroundColor(.blue)
+                        Text("ピン留め")
+                            .font(.system(size: 9, weight: .medium))
+                            .foregroundColor(.blue)
+                        Spacer()
+                    }
+                }
+                
+                // タイトル - より大きく
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold))
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.leading)
+                
+                Spacer()
+                
+                // ステータス情報を横並びに
+                HStack(spacing: 8) {
+                    if let status = statusText(for: days) {
+                        HStack(spacing: 4) {
+                            Image(systemName: statusIcon(for: days))
+                                .font(.system(size: 12))
+                                .foregroundColor(daysColor(for: days))
+                            
+                            Text(status)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(daysColor(for: days))
+                        }
+                        
+                        Spacer()
+                        
+                        // 追加情報
+                        Text(additionalInfo(for: days))
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            
+            // 右側：装飾的な要素
+            VStack {
+                Spacer()
+                
+                // 期限の緊急度に応じたアイコン
+                Image(systemName: urgencyIcon(for: days))
+                    .font(.system(size: 20))
+                    .foregroundColor(daysColor(for: days).opacity(0.3))
+                
+                Spacer()
+                
+                // 日付の詳細表示
+                VStack(spacing: 2) {
+                    Text("残り")
+                        .font(.system(size: 8, weight: .medium))
+                        .foregroundColor(.secondary)
+                    
+                    Text("\(abs(days))")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundColor(daysColor(for: days))
+                    
+                    Text("日")
+                        .font(.system(size: 8, weight: .medium))
+                        .foregroundColor(.secondary)
+                }
+                
+                Spacer()
+            }
+            .frame(width: 50)
+            .padding(.trailing, 12)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    // MARK: - 新しいヘルパー関数を追加
+
+    private func urgencyIcon(for days: Int) -> String {
+        switch days {
+        case ..<0: return "exclamationmark.triangle.fill"
+        case 0: return "clock.fill"
+        case 1: return "alarm.fill"
+        case 2...3: return "flame.fill"
+        case 4...7: return "hourglass"
+        default: return "checkmark.circle"
+        }
+    }
+
+
+    @ViewBuilder
+    private func largeWidgetLayout(title: String, days: Int) -> some View {
+        VStack(spacing: 16) {
+            // 上部：ピン留めインジケーターとタイトル
+            VStack(spacing: 8) {
+                if entry.isPinned {
+                    HStack {
+                        Spacer()
+                        HStack(spacing: 4) {
+                            Image(systemName: "pin.fill")
+                                .font(.system(size: 12))
+                                .foregroundColor(.blue)
+                            Text("ピン留め中")
+                                .font(.system(size: 11, weight: .medium))
+                                .foregroundColor(.blue)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                }
+                
+                Text(title)
+                    .font(.system(size: 18, weight: .semibold))
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.8)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.primary)
+            }
+            
+            Spacer()
+            
+            // 中央：大きな残り日数表示
+            ZStack {
+                Circle()
+                    .fill(daysColor(for: days).opacity(0.08))
+                    .frame(width: 120, height: 120)
+                    .overlay(
+                        Circle()
+                            .stroke(daysColor(for: days), lineWidth: 4)
+                    )
+                
+                VStack(spacing: 4) {
+                    Text("\(abs(days))")
+                        .font(.system(size: 36, weight: .bold, design: .rounded))
+                        .foregroundColor(daysColor(for: days))
+                    
+                    Text(daysLabel(for: days))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            Spacer()
+            
+            // 下部：ステータス情報
+            if let status = statusText(for: days) {
+                HStack(spacing: 8) {
+                    Image(systemName: statusIcon(for: days))
+                        .font(.system(size: 16))
+                        .foregroundColor(daysColor(for: days))
+                    
+                    Text(status)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(daysColor(for: days))
+                    
+                    Spacer()
+                    
+                    // 追加情報
+                    Text(additionalInfo(for: days))
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(daysColor(for: days).opacity(0.1))
+                .cornerRadius(12)
+            }
+        }
+        .padding(16)
+    }
+
+    @ViewBuilder
+    private func noDataLayout() -> some View {
+        VStack(spacing: spacing(for: family)) {
+            Image(systemName: "calendar.badge.exclamationmark")
+                .font(.system(size: iconSize(for: family)))
+                .foregroundColor(.gray)
+            
+            VStack(spacing: 4) {
+                Text("タスクなし")
+                    .font(noDataFont(for: family))
+                    .foregroundColor(.secondary)
+                    .fontWeight(.medium)
+                
+                if family != .systemSmall {
+                    Text("新しいタスクを追加してください")
+                        .font(.system(size: smallTextSize(for: family)))
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+        }
+        .padding(paddingSize(for: family))
+    }
+
     // MARK: - Helper Functions
-    
+
+    private func statusText(for days: Int) -> String? {
+        switch days {
+        case ..<0: return "期限切れ"
+        case 0: return "今日まで"
+        case 1: return "明日まで"
+        case 2...3: return "急ぎ"
+        case 4...7: return "もうすぐ"
+        default: return nil
+        }
+    }
+
+    private func statusIcon(for days: Int) -> String {
+        switch days {
+        case ..<0: return "exclamationmark.triangle.fill"
+        case 0: return "clock.fill"
+        case 1: return "alarm.fill"
+        case 2...3: return "flame.fill"
+        case 4...7: return "hourglass"
+        default: return "calendar"
+        }
+    }
+
+    private func additionalInfo(for days: Int) -> String {
+        switch days {
+        case ..<0: return "\(abs(days))日経過"
+        case 0: return "最終日"
+        case 1: return "残り1日"
+        case 2...7: return "要注意"
+        default: return "余裕あり"
+        }
+    }
+
     private func daysLabel(for days: Int) -> String {
         if days < 0 {
             return "日経過"
@@ -406,120 +650,35 @@ struct DeadLineWidgetEntryView: View {
             return "日後"
         }
     }
-    
-    private func showPinIndicator(for family: WidgetFamily) -> Bool {
-        switch family {
-        case .systemSmall:
-            return false
-        default:
-            return true
-        }
-    }
 
     // MARK: - Style Helpers
-    
-    private func titleFont(for family: WidgetFamily) -> Font {
+
+    private func noDataFont(for family: WidgetFamily) -> Font {
         switch family {
         case .systemSmall:
             return .system(size: 11, weight: .medium)
         case .systemMedium:
-            return .system(size: 14, weight: .medium)
+            return .system(size: 13, weight: .medium)
         case .systemLarge:
-            return .system(size: 18, weight: .medium)
-        case .systemExtraLarge:
-            return .system(size: 22, weight: .medium)
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return .system(size: 10, weight: .medium)
-        @unknown default:
-            return .body
-        }
-    }
-    
-    private func daysFont(for family: WidgetFamily) -> Font {
-        switch family {
-        case .systemSmall:
-            return .system(size: 24, weight: .bold, design: .rounded)
-        case .systemMedium:
-            return .system(size: 36, weight: .bold, design: .rounded)
-        case .systemLarge:
-            return .system(size: 48, weight: .bold, design: .rounded)
-        case .systemExtraLarge:
-            return .system(size: 60, weight: .bold, design: .rounded)
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return .system(size: 16, weight: .bold, design: .rounded)
-        @unknown default:
-            return .title
-        }
-    }
-    
-    private func dayLabelFont(for family: WidgetFamily) -> Font {
-        switch family {
-        case .systemSmall:
-            return .system(size: 9, weight: .medium)
-        case .systemMedium:
-            return .system(size: 12, weight: .medium)
-        case .systemLarge:
-            return .system(size: 14, weight: .medium)
-        case .systemExtraLarge:
-            return .system(size: 16, weight: .medium)
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return .system(size: 8, weight: .medium)
-        @unknown default:
+            return .system(size: 15, weight: .medium)
+        default:
             return .caption
         }
     }
-    
-    private func noDataFont(for family: WidgetFamily) -> Font {
-        switch family {
-        case .systemSmall:
-            return .system(size: 10)
-        case .systemMedium:
-            return .system(size: 12)
-        case .systemLarge:
-            return .system(size: 14)
-        case .systemExtraLarge:
-            return .system(size: 16)
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return .system(size: 8)
-        @unknown default:
-            return .caption
-        }
-    }
-    
-    private func titleLineLimit(for family: WidgetFamily) -> Int {
-        switch family {
-        case .systemSmall:
-            return 2
-        case .systemMedium:
-            return 2
-        case .systemLarge:
-            return 3
-        case .systemExtraLarge:
-            return 4
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 1
-        }
-    }
-    
+
     private func iconSize(for family: WidgetFamily) -> CGFloat {
         switch family {
         case .systemSmall:
-            return 16
-        case .systemMedium:
-            return 24
-        case .systemLarge:
-            return 32
-        case .systemExtraLarge:
-            return 40
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return 12
-        @unknown default:
             return 20
+        case .systemMedium:
+            return 28
+        case .systemLarge:
+            return 36
+        default:
+            return 24
         }
     }
-    
+
     private func paddingSize(for family: WidgetFamily) -> CGFloat {
         switch family {
         case .systemSmall:
@@ -528,32 +687,37 @@ struct DeadLineWidgetEntryView: View {
             return 12
         case .systemLarge:
             return 16
-        case .systemExtraLarge:
-            return 20
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return 4
-        @unknown default:
+        default:
             return 8
         }
     }
-    
+
     private func spacing(for family: WidgetFamily) -> CGFloat {
         switch family {
         case .systemSmall:
-            return 2
-        case .systemMedium:
-            return 4
-        case .systemLarge:
             return 6
-        case .systemExtraLarge:
+        case .systemMedium:
             return 8
-        case .accessoryCircular, .accessoryRectangular, .accessoryInline:
-            return 1
-        @unknown default:
-            return 2
+        case .systemLarge:
+            return 12
+        default:
+            return 6
         }
     }
-    
+
+    private func smallTextSize(for family: WidgetFamily) -> CGFloat {
+        switch family {
+        case .systemSmall:
+            return 7
+        case .systemMedium:
+            return 9
+        case .systemLarge:
+            return 11
+        default:
+            return 8
+        }
+    }
+
     private func daysColor(for days: Int) -> Color {
         switch days {
         case ..<0:
@@ -597,5 +761,12 @@ struct DeadLineWidget: Widget {
     DeadLineWidget()
 } timeline: {
     SimpleEntry(date: .now, daysLeft: 7, itemTitle: "重要な会議の準備", isPinned: true)
+    SimpleEntry(date: .now, daysLeft: nil, itemTitle: nil, isPinned: false)
+}
+
+#Preview(as: .systemLarge) {
+    DeadLineWidget()
+} timeline: {
+    SimpleEntry(date: .now, daysLeft: 1, itemTitle: "最終プレゼンテーション", isPinned: true)
     SimpleEntry(date: .now, daysLeft: nil, itemTitle: nil, isPinned: false)
 }
