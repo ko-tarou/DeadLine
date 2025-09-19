@@ -12,7 +12,5 @@ import SwiftUI
 struct DeadLineWidgetBundle: WidgetBundle {
     var body: some Widget {
         DeadLineWidget()
-        DeadLineWidgetControl()
-        DeadLineWidgetLiveActivity()
     }
 }

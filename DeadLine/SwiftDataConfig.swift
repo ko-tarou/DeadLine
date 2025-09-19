@@ -13,7 +13,7 @@ import Foundation
 struct SwiftDataConfig {
     
     // App Groups の識別子
-    static let appGroupIdentifier = "group.deadline.shared"
+    static let appGroupIdentifier = "group.deadline.app.shared"
     
     // 共有データベースファイル名
     static let databaseFileName = "DeadlineDatabase.sqlite"
